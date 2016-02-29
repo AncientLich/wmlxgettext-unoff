@@ -1,25 +1,5 @@
 #! /usr/bin/env python3
 
-# Allora... 250 grammi di farina, 100 grammi di burro, 100 di zucchero, un uovo, mezza bustina di lievito e 50 grammi di gocce di cioccolato.
-# In una ciotola si impastano farina, zucchero, lievito, burro ammorbidito e uovo.
-# Fatto questo, incorpori all'impasto le gocce di cioccolato. Poi metti l'impasto in frigorifero per una mezz'ora.
-# A questo punto, rivesti due teglie di carta forno e dai la forma ai biscotti. Puoi stenderli con un mattarello e tagliarli con delle formine.
-# Poi li devi cuocere in forno a 180 gradi per 15-20 minuti - appena vedi che il bordo è dorato puoi toglierli.
-# Appena li sforni sono morbidi, ma quando si raffreddano diventano belli croccanti.
-
-# Tieni presente che ogni forno è una storia a sé, quindi potresti dover alzare o abbassare leggermente la temperatura, 
-# o modificare la durata della cottura.
-# switch --force per forzare la generazione dei po
-
-
-#  if iserror is False:
-#   # warning
-#  with self.assertWarns(WmlWarning) as w:
-#  nm.close_node(**closevals)
-#  self.assertEqual(w.warnings[0].message.args[0], mymessage)
-
-# parsingintro.sourceforge.net
-
 # import re
 import unittest
 import re
