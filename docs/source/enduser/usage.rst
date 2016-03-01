@@ -69,7 +69,7 @@ where all following files/scandirs should be searched.
 
 In the real life, it is suggested to reach the directory ``data/add-ons`` 
 where all wesnoth add-ons (including yours) are stored, and use 
-``--directory=.``.
+``--directory=.``
 
 Or, otherwise, if you run ``wmlxgettext`` using another directory you could
 write the absoulte path where your wesnoth add-ons is stored. 
