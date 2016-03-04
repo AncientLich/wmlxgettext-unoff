@@ -42,7 +42,6 @@ import sys
 import warnings
 import argparse
 from datetime import datetime
-from time import strftime
 import pywmlx
 
 
@@ -176,8 +175,9 @@ def main():
             infile = None
             try: 
                 infile = open(fname, 'r', encoding="utf8")
-            except:
-                wmlerr(fname, "cannot open file")
+            except OSError as e:
+                errmsg = 'cannot read file: ' + e.args[1]
+                pywmlx.wmlerr(e.filename, errmsg, OSError)
             if fname[-4:].lower() == '.cfg':
                 pywmlx.statemachine.run(filebuf=infile, fileref=fx, 
                             fileno=fileno, startstate='wml_idle', waitwml=True)
@@ -190,12 +190,16 @@ def main():
         outfile = sys.stdout
     else:
         outfile_name = os.path.realpath(os.path.normpath(args.outfile))
-        outfile = open(outfile_name, 'w', encoding="utf8")
+        try:
+            outfile = open(outfile_name, 'w', encoding="utf8")
+        except OSError as e:
+            errmsg = 'cannot write file: ' + e.args[1]
+            pywmlx.wmlerr(e.filename, errmsg, OSError)
     pkgversion = args.package_version + '\\n"'
     print('msgid ""\nmsgstr ""', file=outfile)
     print('"Project-Id-Version:', pkgversion, file=outfile)
     print('"Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\\n"', file=outfile)
-    now = datetime.now()
+    now = datetime.utcnow()
     cdate = str(now.year) + '-'
     if now.month < 10:
         cdate = cdate + '0'
@@ -208,7 +212,7 @@ def main():
     cdate = cdate + str(now.hour) + ':'
     if now.minute < 10:
         cdate = cdate + '0'
-    cdate = cdate + str(now.minute) + strftime("%z") + '\\n"'
+    cdate = cdate + str(now.minute) + ' UTC\\n"'
     
     print('"POT-Creation-Date:', cdate, file=outfile)
     print('"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"', file=outfile)
