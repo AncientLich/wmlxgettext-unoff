@@ -50,10 +50,9 @@ def commandline(args):
     parser = argparse.ArgumentParser(
         description='Generate .po from WML/lua file list.',
         usage='''wmlxgettext --domain=DOMAIN [--directory=START_PATH]
-                   [--scandirs <dir1, dir2...>]
-                   [--initialdomain=INITIALDOMAIN] [-o OUTPUT_FILE]
+                   [--recursive] [--initialdomain=INITIALDOMAIN]
                    [--package-version=PACKAGE_VERSION]
-                   [--no-ansi-colors] [--fuzzy] [--warnall]
+                   [--no-ansi-colors] [--fuzzy] [--warnall] [-o OUTPUT_FILE]
                    FILE1 FILE2 ... FILEN'''
     )
     parser.add_argument(
@@ -106,7 +105,7 @@ def commandline(args):
               "disable this feature using this flag.\n" +
               "This option doesn't have any effect on windows, since it " +
               "doesn't support ansi colors (on windows colors are ALWAYS" +
-              'disabled).')
+              ' disabled).')
     )
     parser.add_argument(
         '--warnall',
@@ -125,12 +124,11 @@ def commandline(args):
               "By default sentences are NOT setted as fuzzy")
     )
     parser.add_argument(
-        '--scandirs',
-        nargs='+',
-        default=None,
-        help=("If this option is used, wmlxgettext will scan all directories" +
-              " listed after --scandirs option. Every directory must be a " +
-              "subdirectory of the directory setted on --directory option. " +
+        '--recursive',
+        action='store_true',
+        default=False,
+        help=("If this option is used, wmlxgettext will scan recursively the" +
+              " directory setted on the '--directory' parameter. " +
               "If this option is used, EXPLICIT LIST of files will be " +
               "ignored.") 
     )
@@ -155,18 +153,39 @@ def main():
     fileno = 0
     pywmlx.statemachine.setup(sentlist, args.initdom, args.domain)
     filelist = None
-    if args.scandirs is not None:
-        filelist = pywmlx.autof.autoscan(startPath, args.scandirs)
-    elif args.filelist is None:
+    if args.recursive is False and args.filelist is None:
         pywmlx.wmlerr("bad command line", "FILELIST must not be empty. " +
                "Please, run wmlxgettext again and, this time, add some file " +
-               "in FILELIST or use the --scandirs option.")
-    elif len(args.filelist) <= 0:
+               "in FILELIST or use the --recursive option.")
+    elif args.recursive is False and len(args.filelist) <= 0:
         pywmlx.wmlerr("bad command line", "FILELIST must not be empty. " +
                "Please, run wmlxgettext again and, this time, add some file " +
-               "in FILELIST or use the --scandirs option.")
-    else:
+               "in FILELIST or use the --recursive option.")
+    elif args.recursive is False:
         filelist = args.filelist
+    # the following elif cases implicitly expexcts that args.recursive is True
+    elif args.filelist is not None:
+        if len(args.filelist) > 0:
+            pywmlx.wmlwarn("command line warning", "Option --recursive was " +
+                "used, but FILELIST is not empty. All extra file listed in " +
+                "FILELIST will be ignored.")
+        # if we use the --recursive option we recursively scan the add-on
+        # directory. 
+        #    But we want that the file reference informations placed 
+        # into the .po file will remember the (relative) root name of the
+        # addon. 
+        #    This is why the autof.autoscan function returns a tuple of 
+        # values: 
+        #   the first one is the parent directory of the original startPath
+        #   the second one is the filelist (with the "fixed" file references)
+        # In this way we will override startPath to the parent directory
+        # containing the main directory of the wesnoth add-on, without 
+        # introducing bugs.
+        startPath, filelist = pywmlx.autof.autoscan(startPath)
+    # this last case is equal to: 
+    # if args.recursive is True and args.filelist is None:
+    else:
+        startPath, filelist = pywmlx.autof.autoscan(startPath)
     for fx in filelist:
         fileno += 1
         fname = os.path.join(startPath, os.path.normpath(fx))
