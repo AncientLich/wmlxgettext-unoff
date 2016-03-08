@@ -94,7 +94,7 @@ class PendingLuaString:
                 # so, using "if errcode != 1" 
                 # we will add the translatable string ONLY if it is NOT empty
                 if self.luatype == 'luastr2':
-                    self.luastring = re.sub(r"\'", r"'", self.luastring)
+                    self.luastring = re.sub(r"\\\'", r"'", self.luastring)
                 self.luastring = re.sub(r'(?<!\\)"', r'\"', self.luastring)
                 loc_wmlinfos = []
                 loc_addedinfos = None
@@ -160,7 +160,7 @@ class PendingWmlString:
                 # so, using "if errcode != 1" 
                 # we will add the translatable string ONLY if it is NOT empty
                 _linenosub += 1
-                self.wmlstring = re.sub('""', '"', self.wmlstring)
+                self.wmlstring = re.sub('""', r'\"', self.wmlstring)
                 pywmlx.nodemanip.addNodeSentence(self.wmlstring, 
                                              ismultiline=self.ismultiline, 
                                              lineno=self.lineno, 
