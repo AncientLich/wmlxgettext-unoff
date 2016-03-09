@@ -70,14 +70,17 @@ def checksentence(mystring, finfo, *, islua=False):
 
 class PendingLuaString:
     def __init__(self, lineno, luatype, luastring, ismultiline, 
-                 istranslatable):
+                 istranslatable, numequals=0):
         self.lineno = lineno
         self.luatype = luatype
         self.luastring = luastring
         self.ismultiline = ismultiline
         self.istranslatable = istranslatable
+        self.numequals = numequals
     
     def addline(self, value):
+        if self.luatype != 'luastr3':
+            self.luastring = re.sub('\\\s*$', '', self.luastring)
         self.luastring = self.luastring + '\n' + value
     
     def store(self):
@@ -169,6 +172,15 @@ class PendingWmlString:
                                              addition=_pending_addedinfo)
         _pending_overrideinfo = None
         _pending_addedinfo = None
+
+
+
+def lua3_endrx():
+    global _pending_luastring
+    if _pending_luastring is None:
+        return re.compile(r']]')
+    else:
+        return re.compile(_pending_luastring.rx_close)
 
 
 

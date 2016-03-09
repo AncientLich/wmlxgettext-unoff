@@ -70,7 +70,7 @@ class LuaCommentState:
 
 class LuaStr01:
     def __init__(self):
-        rx = r'(?:[^["' + r"'" + r']*?)(_?)\s*"((?:\\"|[^"])*)("?)'
+        rx = r'''(?:[^["']*?)(_?)\s*"((?:\\"|[^"])*)("?)'''
         self.regex = re.compile(rx)
         self.iffail = 'lua_str02'
     
@@ -98,7 +98,7 @@ class LuaStr01:
 
 class LuaStr02:
     def __init__(self):
-        rx = r'(?:[^["' + r"']*?)(_?)\s*'((?:\\'|[^'])*)('?)"
+        rx = r'''(?:[^["']*?)(_?)\s*'((?:\\'|[^'])*)('?)'''
         self.regex = re.compile(rx)
         self.iffail = 'lua_str03' # 'lua_gowml' #'lua_str03'
     
@@ -126,7 +126,7 @@ class LuaStr02:
 
 class LuaStr03:
     def __init__(self):
-        rx = r'(?:[^["' + r"']*?)(_?)\s*\[==\[(.*?)]==]"
+        rx = r'''(?:[^["']*?)(_?)\s*\[(=*)\[(.*?)]\2]'''
         self.regex = re.compile(rx)
         self.iffail = 'lua_str03o'
     
@@ -138,7 +138,7 @@ class LuaStr03:
         loc_multiline = False
         pywmlx.state.machine._pending_luastring = (
             pywmlx.state.machine.PendingLuaString( 
-                lineno, 'luastr3', match.group(2), loc_multiline,
+                lineno, 'luastr3', match.group(3), loc_multiline,
                 loc_translatable
             )
         )
@@ -148,7 +148,7 @@ class LuaStr03:
 
 class LuaStr03o:
     def __init__(self):
-        rx = r'(?:[^["' + r"']*?)(_?)\s*\[==\[(.*)"
+        rx = r'''(?:[^["']*?)(_?)\s*\[(=*)\[(.*)'''
         self.regex = re.compile(rx)
         self.iffail = 'lua_gowml'
     
@@ -160,8 +160,8 @@ class LuaStr03o:
         loc_multiline = True
         pywmlx.state.machine._pending_luastring = (
             pywmlx.state.machine.PendingLuaString( 
-                lineno, 'luastr3', match.group(2), loc_multiline,
-                loc_translatable
+                lineno, 'luastr3', match.group(3), loc_multiline,
+                loc_translatable, len(match.group(2))
             )
         )
         return (xline, 'lua_str30')
@@ -210,25 +210,25 @@ class LuaStr20:
 
 class LuaStr30:
     def __init__(self):
-        self.regex = re.compile(r'(.*?)]==]')
-        self.iffail = 'lua_str31'
-    
-    def run(self, xline, lineno, match):
-        pywmlx.state.machine._pending_luastring.addline( match.group(1) )
-        xline = xline [ match.end(): ]
-        return (xline, 'lua_idle')
-
-
-
-class LuaStr31:
-    def __init__(self):
         self.regex = None
         self.iffail = None
     
     def run(self, xline, lineno, match):
-        pywmlx.state.machine._pending_luastring.addline(xline)
-        xline = None
-        return (xline, 'lua_str30')
+        rx = ( r'(.*?)]={' +  
+              str(pywmlx.state.machine._pending_luastring.numequals) +
+              '}]' )
+        realmatch = re.match(rx, xline)
+        _nextstate = 'lua_str30'
+        if realmatch:
+            pywmlx.state.machine._pending_luastring.addline( 
+                realmatch.group(1) )
+            xline = xline [ realmatch.end(): ]
+            _nextstate = 'lua_idle'
+        else:
+            pywmlx.state.machine._pending_luastring.addline(xline)
+            xline = None
+            _nextstate = 'lua_str30'
+        return (xline, _nextstate)
 
 
 
@@ -286,7 +286,6 @@ def setup_luastates():
                                    ('lua_str10', LuaStr10),
                                    ('lua_str20', LuaStr20),
                                    ('lua_str30', LuaStr30),
-                                   ('lua_str31', LuaStr31),
                                    ('lua_gowml', LuaGowmlState),
                                    ('lua_final', LuaFinalState)]:
         st = stateclass()
