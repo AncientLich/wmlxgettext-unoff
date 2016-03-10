@@ -73,15 +73,22 @@ class PendingLuaString:
                  istranslatable, numequals=0):
         self.lineno = lineno
         self.luatype = luatype
-        self.luastring = luastring
+        self.luastring = ''
         self.ismultiline = ismultiline
         self.istranslatable = istranslatable
         self.numequals = numequals
+        self.addline(luastring, True)
     
-    def addline(self, value):
+    def addline(self, value, isfirstline=False):
         if self.luatype != 'luastr3':
-            self.luastring = re.sub('\\\s*$', '', self.luastring)
-        self.luastring = self.luastring + '\n' + value
+            value = re.sub('\\\s*$', '', value)
+        else:
+            value = value.replace('\\', r'\\')
+            # nope
+        if isfirstline:
+            self.luastring = value
+        else:
+            self.luastring = self.luastring + '\n' + value
     
     def store(self):
         global _pending_addedinfo 
@@ -98,7 +105,10 @@ class PendingLuaString:
                 # we will add the translatable string ONLY if it is NOT empty
                 if self.luatype == 'luastr2':
                     self.luastring = re.sub(r"\\\'", r"'", self.luastring)
-                self.luastring = re.sub(r'(?<!\\)"', r'\"', self.luastring)
+                if self.luatype != 'luastr3':
+                    self.luastring = re.sub(r'(?<!\\)"', r'\"', self.luastring)
+                if self.luatype == 'luastr3':
+                    self.luastring = self.luastring.replace('"', r'\"')
                 loc_wmlinfos = []
                 loc_addedinfos = None
                 if _pending_overrideinfo is not None:
@@ -138,12 +148,12 @@ class PendingLuaString:
 class PendingWmlString:
     def __init__(self, lineno, wmlstring, ismultiline, istranslatable):
         self.lineno = lineno
-        self.wmlstring = wmlstring
+        self.wmlstring = wmlstring.replace('\\', r'\\')
         self.ismultiline = ismultiline
         self.istranslatable = istranslatable
     
     def addline(self, value):
-        self.wmlstring = self.wmlstring + '\n' + value
+        self.wmlstring = self.wmlstring + '\n' + value.replace('\\', r'\\')
     
     def store(self):
         global _pending_addedinfo 
