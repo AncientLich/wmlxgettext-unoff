@@ -26,10 +26,10 @@ Documentation:
     
 wmlxgettext is deeply documented. See the online documentation at:
   
-      http://ancientlich.github.io/wmlxgettext-unoff/index.html
+http://ancientlich.github.io/wmlxgettext-unoff/index.html
   
 
-The complete source code (1) used to write the online documentation is stored 
+The complete source code used to write the online documentation is stored 
 under the "docs/source" directory of this repository 
 
 (only makefile missed, but it can be created with sphinx using the 
