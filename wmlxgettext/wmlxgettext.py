@@ -219,20 +219,12 @@ def main():
     print('"Project-Id-Version:', pkgversion, file=outfile)
     print('"Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\\n"', file=outfile)
     now = datetime.utcnow()
-    cdate = str(now.year) + '-'
-    if now.month < 10:
-        cdate = cdate + '0'
-    cdate = cdate + str(now.month) + '-'
-    if now.day < 10:
-        cdate = cdate + '0'
-    cdate = cdate + str(now.day) + ' '
-    if now.hour < 10:
-        cdate = cdate + '0'
-    cdate = cdate + str(now.hour) + ':'
-    if now.minute < 10:
-        cdate = cdate + '0'
-    cdate = cdate + str(now.minute) + ' UTC\\n"'
-    
+    cdate = '{:04d}-{:02d}-{:02d} {:02d}:{:02d} UTC\\n"'.format(now.year,
+                                                                now.month,
+                                                                now.day,
+                                                                now.hour,
+                                                                now.minute)
+
     print('"POT-Creation-Date:', cdate, file=outfile)
     print('"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"', file=outfile)
     print('"Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"', file=outfile)
