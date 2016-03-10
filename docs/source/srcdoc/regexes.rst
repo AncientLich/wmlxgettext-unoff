@@ -281,7 +281,7 @@ We will display the LuaStr01 python code
 
 .. code-block:: python
    
-   rx = r'(?:[^["' + r"'" + r']*?)(_?)\s*"((?:\\"|[^"])*)("?)'
+   rx = r'''(?:[^["']*?)(_?)\s*"((?:\\"|[^"])*)("?)'''
    self.regex = re.compile(rx)
    
 wich is equal to the following regexp::
@@ -331,14 +331,18 @@ The basic idea is the same as the one used by `State WmlStr01`_.
 
 (See also: `State WmlStr01`_ and `LuaStr01 and LuaStr02 States`_).
 
+--------------
+LuaStr03 State
+--------------
 
------------------------------
-LuaStr03 and LuaStr03o States
------------------------------
+.. note:
+    
+  Special thank to celticminstrel for improving my old regex into the
+  current regex.
 
 LuaStr03 regexp can is equal to the following regexp rule::
    
-   ^(?:[^["']*?)(_?)\s*\[==\[(.*?)]==]
+   ^(?:[^["']*?)(_?)\s*\[(=*)\[(.*?)]\2]
         
 The first part of regexp (``^(?:[^["']*?)``) is already explained in
 `LuaStr01 and LuaStr02 States`_.
@@ -346,56 +350,122 @@ The first part of regexp (``^(?:[^["']*?)``) is already explained in
 The second part of regexp(``(_?)\s*``) captures ``_`` on group 1 and collect
 any following spaces/tabs (without storing them in groups).
 
-The third part of the regexp (``\[==\[(.*?)]==]``) capture all characters
-contained in ``[==[`` and ``]==]`` delimiters, storing them in group 2 (text).
+The third part of regexp (``\[(=*)\[``) captures all equal symbols placed 
+between the two brackets and store them into group 2.
 
-   * the group ``(.*?)`` captures less characters than possible until the
-     ``]==]`` end-delimiter is found
-   * wich means that the regexp is **False** (does not match) if it is a 
-     multi-line string (where the delimiter ``]==]`` is not in the current
-     parsed line, bit it will be found in another following line of the parsed
-     file).
+The fourth part of regexp (``(.*?)``) captures all characters contained between
+the lua bracketed string delimiters (*ending delimiter is defined by the last
+part of the regexp*). It captures the less charcaters than possible until the
+end delimiter found
 
-This is why, unlike ``LuaStr01`` and ``LuaStr02`` it was needed an explicit
-rule when the lua string type 3 is multiline. And this is the rule defined
-on LuaStr03o::
+The last part of regexp (``]\2]``) will search the right lua bracketed string
+end delimiter, checking how many equals symbols were captured on group 2 
+(``\2`` will search exactly what group 2 matched). So, if the group 2 is an
+empty string, than ``]]`` will be the end delimiter searched by regexp. 
+If the group 2 is ``===`` (3 equals symbols) than the end delimiter will be
+``]===]``... and so on.
+
+.. note::
+ 
+  This regexp, unlike the one used on ``LuaStr01`` and ``LuaStr02``, does not
+  match at all if the right end-delimiter will be not found in the parsed line.
+  This is why lua bracketed strings (lua string type 3) require another state
+  that explicitly tells when the lua string type 3 is multiline. 
+  And this is the rule defined on LuaStr03o, explained in the next 
+  subparagraph.
+
+---------------
+LuaStr03o State
+---------------
+
+LuaStr03o State will match when the beginning of a lua multiline bracketed
+string is found::
    
-   ^(?:[^["']*?)(_?)\s*\[==\[(.*)
+   ^(?:[^["']*?)(_?)\s*\[(=*)\[(.*)
 
-The state LuaStr03 will capture, on group 1, the ``_`` symbol (if is used), and
-on group 2, ALL characters AFTER the ``[==[`` delimiter.
-This time the group 2 use **greedy** rule, capturing all following characters.
-This is why, this time, the regexp will be **True** (will match) even if 
-nothing follows the ``[==[`` marker (multiline string).
+The state LuaStr03o will capture:
+  * on group 1: the ``_`` symbol (if is used)
+  * on group 2: how many equal symbols where placed in the *starting string
+    delimiter* (for example the delimiter ``[=[`` will contain one equal 
+    symbol between the two brackets)
+  * on group 3: the text of the first line of the string. This time the group 3 
+    use **greedy** rule, capturing all following characters.
+    This is why, this time, the regexp will be **True** (will match) even if 
+    nothing follows the ``[=[`` marker (multiline string).
                           
+.. note::
+  
+  LuaStr03o, when creating the pending string (PendingLuaString object on
+  state machine), stores the amount of equals signs in the 
+  PendingLuaString.numequals variable, wich will be used by LuaState30 to
+  calculate (on runtime) wich regexp should be actually used.
+
 --------------
 State LuaStr30
 --------------
 
-The regexp used by LuaStr30 (is multiline string type 3 closed?) from line 2
-of a multi-line string behave differently than the other multi-line states
-seen before::
+The LuaStr30 is a very particular state, wich is structured as an always-run 
+state, but it works like a standard state.
+
+The regexp definition, infact, is not placed (as usual) in the State.regexp
+parameter, defined in the __init__ function. This becouse all states are
+stored in the state machine during the setup phase, before starting to parse
+WML and Lua files. Wich means that all State.regexp values can be defined only
+on the setup phase itself and they cannot change anymore.
+
+But, this time, we require to use a regexp rule that search exactly wich is
+the end delimiter for that one lua bracketed multiline string started on the
+previous LuaStr03o state.
+
+This why the regexp is defined directly in the run() function, wich explicitly
+performs all actions usually done by statemachine when evaluating a 
+State.regexp.
+
+This is the regexp that will be evaluated in the run() function::
     
-   ^(.*?)]==]
+   ^(.*?)]={n}]
 
-The idea is very similar to the one used by LuaStr03 state. It collects all
-characters before ``]==]`` using the "**less greedy than possible**" rule.
-Those characters will be stored on group 1.
+where ``n`` is the exact number of equals symbols stored in the
+PendingLuaString.numequals variable by LuaStr03o.
 
-This also mean, like explained in the previous subparagraph, that the regexp 
-**does not match** if the ``]==]`` marker was not found.
+So, for example, if LuaStr03o.regex previously matched ``==`` on group 2 (wich
+means that ``[==[`` was the opening delimiter used), then the regexp searched
+by the run function will be::
+  
+  ^(.*?)]={2}]
 
-So:
-   
-   * if the ``]==]`` marker is found, regexp will match and group 1 will 
-     contain the last line of the multi-line string to add to the pending 
-     string
-   * if the ``]==]`` marker is **not** found, regexp will **not** match and
-     statemachine will go to the **iffail** State (LuaStr31)
-   * so why, LuaStr31 is required to store all middle-lines of the multi-line
-     string type 3. LuaStr31 (always-run state) will store all the file line
-     in the multiline string, than consume the string, and come back to 
-     LuaStr30 state.
+Now it is the time to actually explain the regexp. We will focus the 
+explaination around this last concrete example (end delimiter must have exactly 
+two equal symbols between close brackets). So why, from now on, we will 
+explain the regexp::
+  
+  ^(.*?)]={2}]
+
+This regexp will match if the line contains somewhere the ``]==]`` delimiter.
+the final part of the regexp (``]={2}]``), infact, means:
+  
+  * litteral ``]``
+  * followed by ``=`` (two times)
+  * followed by ``]``
+
+If the delimiter ``]==]`` will be found, the regexp will match, the last part
+of the string will be stored on group 1, than it will be added to the pending
+string. LuaStr30 will go to LuaIdleState (parsed line will be not completely 
+consumed. Only what it will be matched will be removed from the parsed line.
+
+If the delimiter ``]==]`` will not be found, than the regexp will not mach.
+LuaStr30 will store all the parsed line into the pending lua string and consume
+it at all, so the statemachine will be able to read the next line of code. 
+LuaStr30 will come back again to itself (it acts like a recursive state, in a
+very similar way like the LuaStr10 and LuaStr20 states).
+
+.. note::
+  
+  The first part of the regexp ``(.*?)`` capture all characters using the
+  **less greedy than possible** rule, with the same effects explained on
+  `State WmlStr01`_ (first part of the regexp where the *less greedy* rule
+  was used).
+  
 
 -------------
 LuaFinalState

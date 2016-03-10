@@ -23,23 +23,10 @@ digraph luastr {
    str03o [
      label="{LuaStr03o|type 3|(multiline string: line 1)}"
    ]
-   str30 [
-     label="{LuaStr30|type 3|(multiline string)}"
+   str30 [ color="red", fillcolor="#ffaaaa",
+     label="{LuaStr30|type 3|(multiline string: from line 2 to last line)}"
    ]
-   
-   explain_idle [
-     shape="ellipse", fillcolor="purple",
-     label="FOUND closing ]==]"
-   ]
-   explain_31 [
-     shape="ellipse", fillcolor="purple",
-     label="closing ]==] NOT FOUND"
-   ]
-   
-   str31 [ fillcolor="green",
-     label="{LuaStr31|type 3|(multiline continue)}"
-   ]
-   
+      
    nextstate [label="Next State", shape="box", fillcolor="orange"]
    
    str01 -> str02 -> str03 -> str03o -> nextstate
@@ -49,12 +36,11 @@ digraph luastr {
    str02 -> str20 [style="dotted", color="blue"]
    str03 -> idle [color="blue"]
    str03o -> str30 [color="blue"]
-   str30 -> explain_idle -> idle
-   str30 -> explain_31 -> str31
-   str31 -> str30 [color="darkgreen"]
    str10 -> str10
    str20 -> str20
+   str30 -> str30
    str10 -> idle
    str20 -> idle
+   str30 -> idle
 } 
 

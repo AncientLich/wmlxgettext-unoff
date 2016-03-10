@@ -248,17 +248,25 @@ Unlike WML, Lua accepts three different syntaxes:
    
    'string: type 2'
    
-   [==[string: type 3]==]
+   [[string: type 3]]
    
-Strictly speaking about lua code, the third syntax could accept any number of
-equals signs (from *0* to *n*) bettwen the the two squares ``[[`` and ``]]``.
+The third way (mostly suggested for multi-line lua strings) is even more
+flexible than showed in the sample code above, as you can type any number
+of equals symbols (from 0 to n) between the two brackets ``[[`` and ``]]``
 
-However wmlxgettext 2.0 will accept **only** the exact syntax showed in the 
-sample code above. So you must use ``[==[`` and ``]==]`` if you want to use 
-the third syntax.
-
-All this flexibility (three ways to identify a string) means "*more states are
-required*". There are, infact, eight states this time:
+.. note::
+    
+  In the example above, we wrote ``[[string: type3]]``, since it is the most 
+  common way of defining a bracketed lua string, but we could also put any 
+  number of equals symobols between brackets. 
+  
+  For example, we could have printed ``[==[string: type3]==]`` placing the 
+  equal symbol two times. In that case, both opening and closing delimiter
+  must use the same amount of equal symbols.
+  
+Coming back to wmlxgettext, we shoud now notice that all this flexibility 
+allowed by the lua language (three ways to identify a string) means 
+"*more states are required*". There are, infact, seven states this time:
     
 .. code-block:: python
    
@@ -280,13 +288,10 @@ required*". There are, infact, eight states this time:
    # ./pywmlx/state/lua_states:149 (syntax "3": start multiline)
    class LuaStr03o:
        # ...
-   # ./pywmlx/state/lua_states:211 (syntax "3": multiline)
+   # ./pywmlx/state/lua_states:211 (syntax "3": multiline [from line 2])
    class LuaStr30:
        # ...
-   # ./pywmlx/state/lua_states:223 (syntax "3": multiline is not yet finished)
-   class LuaStr31:
-       # ...
-
+   
 .. graphviz:: luastr.d
 
 This time the flow chart is not so easy to understand at a first sight, so
@@ -295,10 +300,19 @@ it requires a little explaination:
     * Boxes/Ellipses:
        * green -> always-run states (green arrow rule applied)
        * orange -> used for "Next State", for a better look
-       * red -> LuaStr10 and LuaStr20 are recursive states. They can go back
-         to theirself, until the end of the multi-line string is matched 
+       * red (LuaStr10 and LuaStr20): LuaStr10 and LuaStr20 are recursive 
+         standard states. They can go back to theirself, until the end of the 
+         multi-line string is matched 
          (when the multi-line string ends, *'lua_idle'* state will be reached)
          (no arrow rule: all arrows are black)
+       * red (LuaStr30): LuaStr30 is indeed an always-run state, but it 
+         acts like a recursive standard state. The regular expression 
+         evaluation is moved in the run() function since the regexp rule is 
+         calculated on runtime.
+         If the regexp doesn't match (current line of code does not end the
+         multiline string) than LuaStr30 comes back to itself (recursive 
+         state). If the regexp does match, the multi-line string finished, 
+         and LuaStr30 goes to LuaIdleState.
        * grey -> standard states (black, blue and dotted blue arrow rules 
          applied)
        * purple (ellipse) -> LuaStr30 can find (or not) the ``]==]`` symbol.

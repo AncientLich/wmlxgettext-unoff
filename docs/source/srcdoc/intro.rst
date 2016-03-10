@@ -49,19 +49,28 @@ But it has also its **cons**:
 The new command line
 ====================
 
-wmlxgettxt 2.x could be invoked in the classical way
+wmlxgettxt 2.x could be invoked in the classical way::
    
-   ``./wmlxgettext --domain=DOMAIN --directory=DIRECTORY [FILELIST] > file.po``
+   ./wmlxgettext --domain=DOMAIN --directory=DIRECTORY [FILELIST] > file.po
    
 this syntax is required by wesnoth in order to build the ``pot`` target. 
 However this syntax must be considered deprecated for UMC developers.
 
-This other syntax is suggested, instead:
+This other syntax is suggested, instead::
     
-   ``./wmlxgettext -o file.po --domain=DOMAIN --directory=DIRECTORY [FILELIST]``
+   ./wmlxgettext -o file.po --domain=DOMAIN --directory=DIRECTORY [FILELIST]
 
-Using this other syntax, infact, the file is directly created by wmlxgettext 
-instead of redirecting the output from ``stdout`` to the desired file.
+Or, even better::
+   
+   ./wmlxgettext -o file.po --domain=DOMAIN --directory=YOUR_ADDON_DIRECTORY --recursive
+
+Using those last two syntaxes, infact, the file ``file.po`` is directly created 
+by wmlxgettext instead of redirecting the output from ``stdout`` to the 
+desired file.
+
+If you use the last syntax, wmlxgettext will scan for you (recursively) your
+addon main directory and automaticly collect all .cfg and .lua files without
+any need to list them one-by-one.
 
 Moreover, wmlxgettext 2.x, supports more options, that can be listed with: 
     

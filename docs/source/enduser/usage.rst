@@ -35,11 +35,11 @@ Wmlxgettext with implicit list of files
 You can avoid to explicitly tells what files must be parsed by wmlxgettext.
 This is how you can do it on windows::
 
-  c:\<pythondir>\python wmlxgettext --domain=DOMAIN_NAME --directory=ADDONS_DIRECTORY --scandirs [LIST OF SUBDIRECTORIES] -o ./FILENAME.po
+  c:\<pythondir>\python wmlxgettext --domain=DOMAIN_NAME --directory=YOUR_ADDON_DIRECTORY --recursive -o ./FILENAME.po
 
 On linux/mac, you can simply use::
   
-  ./wmlxgettext --domain=DOMAIN_NAME --directory=ADDON_DIRECTORY --scandirs [LIST OF SUBDIRECTORIES] -o ./FILENAME.po
+  ./wmlxgettext --domain=DOMAIN_NAME --directory=YOUR_ADDON_DIRECTORY --recursive -o ./FILENAME.po
 
 without explicitly call the python 3.x interpreter.
 
@@ -82,32 +82,20 @@ As explained here, to correctly setup the ``--directory`` option, you should
 you should write the directory path where the wesnoth *add-ons*
 directory (*wich contains all add-ons including yours*) is located.
 
------------------------------------
---scandirs [LIST OF SUBDIRECTORIES]
------------------------------------
+-----------
+--recursive
+-----------
 
-The ``--scandirs`` option accepts a list of subdirectories (at least one 
-subdirectory). Every directory contained into the ``--scandirs`` list must be
-a sub-directory of the directory explicited with the ``--directory`` option.
-
-Here a fake example (for linux), to understand better how ``--directory``
-and ``--scandirs`` work together::
+If ``--recursive`` option is used, wmlxgettext will scan recursively the 
+directory typed on the ``--directory`` option and collect all .cfg and .lua
+files automaticly::
   
-  ./wmlxgettext --domain=domain_name --directory=/home/user/games/wesnoth/userdata/add-ons --scandirs IftU_Music Invasion_from_the_Unknown -o ./file.po
+  ./wmlxgettext --domain=domain_name --directory=/home/user/games/wesnoth/userdata/add-ons/Invasion_from_the_Unknown --recursive -o ./file.po
 
-In the example showed above, wmlxgettext will watch the directories:
-  
-  * /home/user/games/wesnoth/userdata/add-ons/IftU_Music
-  * /home/user/games/wesnoth/userdata/add-ons/Invasion_from_the_Unknown
-
-and it will collect, recursively, all .cfg / .lua files inside those 
+In the example showed above, infact, wmlxgettext will watch the directory 
+``/home/user/games/wesnoth/userdata/add-ons/Invasion_from_the_Unknown``
+and it will collect, recursively, all .cfg / .lua files inside that 
 directories (and subdirectories). 
-
-.. note::
-  
-  It is suggested to put the option ``--scandirs`` **before** an other option
-  (for example, you can use ``--scandirs`` before calling the ``-o`` option).
-  The order of the options, however, is not important
 
 ----------------
 -o [OUTPUT_FILE]
@@ -142,14 +130,12 @@ the complete list of files that wmlxgettext must parse::
   
   ./wmlxgettext --domain=domain_name --directory=/home/user/wesnoth/userdata/add-ons -o ./file.po Invasion_from_the_Unknown/_main.cfg Invasion_from_the_Unknown/other.cfg [...]
 
-As the example shows, the list of files **must** be written **after** all other
-options. This is why, in this case, the option ``-o ./file.po`` is written
-before the file list starts.
+As the example shows, it is **highly suggested** to put the list of files 
+**after** all other options. This is why, in this case, the option 
+``-o ./file.po`` is written before the file list starts.
 
 Every file listed in list must be written as a relative path starting from the
-``--directory`` directory. The logic is, more or less, the same as the one
-explained before, when we explained the option
-`--scandirs [LIST OF SUBDIRECTORIES]`_.
+``--directory`` directory. 
 
 So, coming back to the example showed above:
   
@@ -161,11 +147,11 @@ This means that those two files will be searched and parsed:
   * /home/user/wesnoth/userdata/add-ons/Invasion_from_the_Unknown/_main.cfg
   * /home/user/wesnoth/userdata/add-ons/Invasion_from_the_Unknown/other.cfg
 
-.. note:
+.. note::
   
-  **DON'T** use the ``--scandirs`` option if you want to explicitly tell the 
-  list of the files to parse. If the option ``--scandirs`` is used, the 
-  filelist is ignored.
+  DON'T use the ``--recursive`` option if you want to explicitly tell the 
+  list of the files to parse. If the option ``--recursive`` is used, the 
+  explicit list of file will be ignored.
   
 ==============================================================
 Wmlxgettext with explicit list of files and output redirection
