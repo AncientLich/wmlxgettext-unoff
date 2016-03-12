@@ -45,7 +45,7 @@ Special Thanks To:
    * celticminstrel (on #wesnoth freenode channel): for explaining me how
      to use the original perl wmlxgettext tool and for helping me to 
      improve the script.
-   * loonycyborg: for reporting me a bug (now solved)
+   * loonycyborg: for testing the script and reporting bugs.
 
 .. note::
    

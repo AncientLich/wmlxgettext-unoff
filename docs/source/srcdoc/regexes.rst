@@ -80,21 +80,160 @@ At the **start of the string** will search for:
 WmlTagState
 -----------
 
+.. note::
+  
+  Special Thanks to:
+      
+    * **Soliton**
+      
+      * for pointing me that a tag name could, in theory, a number
+      * for having a very nice idea about how to distinguish a tag from an 
+        array index (see the regexp explaination)
+    
+    * **celticminstrel**
+      
+      * for providing me a good regexp rule, that allowed me to
+        write down the regexp used in this state
+
 .. code-block:: python
    
-   self.regex = re.compile(r'\s*\[\s*([\/+-]?)\s*([^\]]*?)\s*\]')
+   rx = r'\s*(?:[^"]+\(\s*)?\s*\[\s*([\/+-]?)\s*([A-Za-z0-9_]+)\s*\]'
+   self.regex = re.compile(rx)
 
-At the **start of the string** will search for:
-   
-   * spaces/tabs (from 0 to n)
-   * the character ``[``
-   * spaces/tabs (from 0 to n)
-   * **zero or one** of any of this signs: ``\``, ``/`` or ``-``. If one of 
-     this character is used, it is captured into group 1.
-   * spaces/tags (from 0 to n)
-   * any number of any kind of character **different from** ``]``. This is the
-     (open/close) tagname and it will captured into group 2.
-   * and finally the character ``]``
+Before explaining what the regex searches, we need to explain why the regexp
+was written in this way.
+
+We must take mind that a WML tag (we now focus on open tag, but the discussion
+is the same also on close tags) can appear in two different ways; this is the 
+first one::
+  
+  # first way: tagname can be defined at the start of the line 
+    [tagname]
+
+In this case, the WML line we are parsing may have an arbitrary number of
+spaces (or tabs) before the tagname, but nothing else must appear before the
+[tagname]. This is the most common case where a tag is defined, but it is not
+the only one; a tag can be added also in the body of a WML macro call as a part
+of WML code passed as parameter to the macro.
+
+So why a WML tag can also apper inside the body of a macro call, like showed
+in this example::
+  
+  {MACRO ([foo]
+               bar = "baz"
+          [/foo])}
+
+So, wmlxgettext had to face two corner problems:
+  * it should record the ``[foo]`` open tag inside the macro call,
+    or it will return an error when closing ``[/foo]`` tag will be found
+  * it should, however avoid to collect array indexes, thinking they are
+    tags, for example::
+     
+     # [$i], here, is not a tag, but it is an index value of the array my_array
+     value = my_array[$i]
+
+So... how to distinguish tag from an array using a regexp? Well... a tagname,
+when placed inside a WML macro call, should be ALWAYS immediately preceded by 
+``(``; nothing else than spaces can be putted before the parenthesis and the 
+tag definition.
+
+After all those explainations we have almost all the informations required to
+understand why the regexp used on WmlTagState is::
+  
+  ^\s*(?:[^"]+\(\s*)?\[\s*([\/+-]?)\s*([A-Za-z0-9_]+)\s*\]
+
+As usual, at the start of the string, an arbitrary number of spaces or tabs 
+(``^\s*``) can be found.
+
+After that the regexp will consider two different scenarios:
+  * first scenario: [tagname] is defined inside a macro call
+  * second scenario: [tagname] stays alone (most common case)
+
+On the fist scenario, the [tagname] is contained into a MACRO CALL, so we must
+verify that the [tagname] definition immediately follows a parenthesis ``(``, 
+except for spaces or tabs that can separates ``(`` and ``[tagname]``::
+  
+  (?:[^"]+\(\s*)?
+
+This check is performed by the non-capturing group written above, wich can 
+occur one-time only (when tagname is contained in the macro definition) 
+**or** it can occur **zero** times (when the tagname stays alone in the line,
+second scenario).
+
+The non-capturing group will search for the last opening parenthesis 
+encountered (and following spaces) that satisfies the remaining part of the
+regexp (explained later) wich search for [tagname].
+
+This is, in particular, made by the second part of the non-capturing group::
+  
+  \(\s*
+    
+But the non-capturing group will verify that no quote symbols (``"``)
+were found in the meantime::
+  
+  [^"]+
+
+The reason of this exclusion is related to the wmlxgettext state machine 
+design: the WmlTagState, infact, is evaluated before the WmlStr01 state 
+(wich will search WML strings, translatable or not).
+
+Wich means: if we allowed WmlTagState to match a line containing a quotation,
+we would let WmlTagState to consume all the matched line, including the
+WML string, wich will never been evalated by WmlStr01 State. But we don't 
+want that this event could happen.
+
+.. graphviz:: wmlstr_regex.d
+
+So, coming back to the regexp::
+  
+  ^\s*(?:[^"]+\(\s*)?\[\s*([\/+-]?)\s*([A-Za-z0-9_]+)\s*\]
+       
+We said:
+    
+  * ``^\s*`` will search for arbitrary number of spaces (or tabs) at the start 
+    of the line
+  * ``(?:[^"]+\(\s*)?`` is the **zero or one** time non-campturing group that
+    verifies if the tag is included inside a macro call. Wmlxgettext will
+    search for a ``[tagname]`` wich is directly preceded by an opening 
+    parenthesis and an arbitrary number of spaces (or tabs). In the meantime
+    it will verify that no quotations symbols (``"``) can be found in the 
+    meantime. If a quotation symbol will be found, the regexp will be fail, so
+    the WmlStr01 state can do its work (see the flow chart here above).
+  * ``\[\s*([\/+-]?)\s*([A-Za-z0-9_]+)\s*\]`` is the final part of the regexp
+    (valid both for tags placed alone and for tags placed inside a macro call)
+    that actually identify the tag. It will discussed here now.
+
+The final part of the regular expression will search for ``[tagname]``, 
+``[/tagname]``, ``[+tagname]`` or ``[-tagname]`` where any number of spaces can
+be placed between ``[``, tagname and ``]``.
+
+If ``+``, ``-`` or ``/`` symbol is used, any number of spaces can be placed
+between the symbol, the ``[`` and the tagname.
+
+The regular expression, in this final part will also do those tasks:
+  
+  * it will store, on group(1), the symbol ``+``, ``-`` or ``/``. 
+    If no symbol will be used, the group(1) will be an empty string.
+  
+  * it will store, on group(2), the tagname. Characters allowed are only 
+    letters, numbers, or underscore, so why the expression ``([A-Za-z0-9_]+)``
+    is used there (note that tagname must contain at least one character, this
+    is why the ``+`` quantifier was used).
+    
+.. note::
+  
+  On group(1), as we said, we can find an empty string (no symbol used) or one
+  of those symbols: ``+``, ``-`` and ``/``.
+  
+    * if ``/`` is found, then the tag is a closing tag
+    * if ``+`` is found, the tag is considered like a normal open tag, ignoring
+      the ``+`` symbol.
+    * if ``-`` is found, the tag is treated like [+tag].
+  
+  Note that the ``[-tag]`` is not currently supported in WML code. Wmlxgettext
+  included the rule for the ``-`` symbol if, in a future, also the [-tag]
+  feature will ever included (thinking the chance of doing the opposite thing
+  that is done by the [+tag]).
 
 --------------
 WmlGetinfState
