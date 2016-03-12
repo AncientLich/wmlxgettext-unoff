@@ -112,7 +112,9 @@ class WmlCommentState:
 
 class WmlTagState:
     def __init__(self):
-        self.regex = re.compile(r'\s*\[\s*([\/+-]?)\s*([^\]]*?)\s*\]')
+        # this regexp is deeply discussed in Source Documentation, chapter 6
+        rx = r'\s*(?:[^"]+\(\s*)?\s*\[\s*([\/+-]?)\s*([A-Za-z0-9_]+)\s*\]'
+        self.regex = re.compile(rx)
         self.iffail = 'wml_getinf'
     
     def run(self, xline, lineno, match):
