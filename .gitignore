@@ -2,3 +2,6 @@ wmlxgettext/pywmlx/__pycache__
 wmlxgettext/pywmlx/__pycache__/*
 wmlxgettext/pywmlx/state/__pycache__
 wmlxgettext/pywmlx/state/__pycache__/*
+docs/build
+docs/build/*
+docs/Makefile
