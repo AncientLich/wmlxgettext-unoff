@@ -26,8 +26,8 @@ Documentation:
     
 wmlxgettext is deeply documented. See the online documentation at:
   
-http://ancientlich.github.io/wmlxgettext-unoff/index.html
-  
+http://wmlxgettext-unoff.readthedocs.org/
+
 
 The complete source code used to write the online documentation is stored 
 under the "docs/source" directory of this repository 
