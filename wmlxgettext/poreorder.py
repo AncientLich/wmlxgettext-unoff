@@ -65,20 +65,34 @@ def main():
         if lineno <= 12:
             print(xline, file=fo)
         else:
+            # storing comments for translator (wmlinfos)
             m = re.match(r'#\.\s+(.+)', xline)
             if m:
                 if wmlinfo is None:
                     wmlinfo = [ m.group(1) ]
                 else:
                     wmlinfo.append(m.group(1))
+            # storing file info references (finfos)
             m = re.match(r'#\:\s+(.+)', xline)
             if m:
                 if finfo is None:
                     finfo = [ m.group(1) ]
                 else:
                     finfo.append(m.group(1))
+            # when msgstr "" is found, the msgid (wich defined the string)
+            # ended, so we know it is time to store the PoSentence in the
+            # dictionary
             if xline == 'msgstr ""':
                 xline = ''
+                # orderid=(1,1,1): this script doesn't care of posentences' 
+                #    internal ordering,since the posentences will follow the 
+                #    same order of the parameter file. 
+                #    So why orderid is not actually used here, and this is why 
+                #    we set it to a fixed value (1,1,1)
+                # addedinfos=[]: during reading the .po file we collected all
+                #    `#. infos` into wmlinfos list. So we not need to 
+                #     distinguish from wmlinfos and addedinfos. This is why
+                #     addedinfos is not used here.
                 sentlist[mystring.lower()] = pywmlx.PoCommentedString(mystring,
                         orderid=(1,1,1), ismultiline=is_multiline, 
                         wmlinfos=wmlinfo , finfos=finfo, addedinfos=[] )
@@ -86,10 +100,15 @@ def main():
                 wmlinfo = None
                 finfo = None
                 is_multiline = False
+            # on msgid (and following lines) we need to store the string
             rx = re.compile(r'(?:msgid\s+)?"(.*)', re.I)
             m = re.match(rx, xline)
             if m:
-                value = re.sub(r'(?:\n)?"$', '', m.group(1))
+                # we must remove the litteral \n" characters at the end of
+                # every line since they will be added again by 
+                # PoCommentedString.write()
+                # [or the reordered .po file will be wrong]
+                value = re.sub(r'(?:\\n)?"$', '', m.group(1))
                 if mystring is None:
                     mystring = value
                 else:
@@ -97,6 +116,17 @@ def main():
                     mystring = mystring + '\n' + value
     fi.close()
     fi = None
+    # When we previously collected all strings stored into the original 
+    # python.po file, we correctly removed all the litteral \n" characters
+    # at the end of every line.
+    # But, on multiline strings, we also collected an unwanted empty line
+    # since the regex r'(?:msgid\s+)?"(.*)' collected also msgid "".
+    # This is why we need to remove the first empty line from multi-line
+    # strings stored into the dictionary
+    for key, val in sentlist.items():
+        if val.ismultiline:
+            val.sentence = re.sub('^\n', '', val.sentence)
+    # opening perl file, so we will know the order that we will follow
     fi = open(os.path.realpath(os.path.normpath(args.perl)), 'r' )
     mystring = None
     lineno = 0
@@ -105,6 +135,11 @@ def main():
         lineno += 1
         if lineno > 12:
             if xline == 'msgstr ""':
+                # when msgstr "" is found, the msgid (wich defined the string)
+                # ended, so we have the complete key that we will 
+                # search in the sentlist dictionary. 
+                # So we can get the PoCommentedString with sentlist.get()
+                # and we can write it into the .po file
                 postring = sentlist.get(mystring.lower())
                 if postring is None:
                     print("error: cannot find:", mystring, file=sys.stderr)
@@ -112,10 +147,11 @@ def main():
                 postring.write(fo, False)
                 print("", file=fo)
                 mystring = None
+            # on msgid (and following lines) we need to store the string
             rx = re.compile(r'(?:msgid\s+)?"(.*)', re.I)
             m = re.match(rx, xline)
             if m:
-                value = re.sub(r'(?:\n)?"$', '', m.group(1))
+                value = re.sub(r'(?:\\n)?"$', '', m.group(1))
                 if mystring is None:
                     mystring = value
                 else:
