@@ -10,7 +10,7 @@ script), has its **pros**:
    * Optionally, can display a warning message if a WML macro is found into a 
      translatable string (translatable string with WML macro will never be
      translated)
-   * Supports ``[==[`` and ``]==]`` markers for Lua multi-line strings
+   * Recognizes and captures lua bracketed strings
    * Strings captured on a .lua file is reported to its **right** line of code
    * Any file reference is written in a single line (like expected in a .po 
      file)
