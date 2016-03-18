@@ -18,7 +18,7 @@ import pywmlx
 
 def commandline(args):
     parser = argparse.ArgumentParser(
-        description=('Reorder python.po putting sentences in same sequence ' +
+        description=('Reorder python.po putting sentences in same sequence '
                      'as perl.po')
     )
     parser.add_argument(
@@ -26,7 +26,7 @@ def commandline(args):
         default='./perl.po',
         required=True,
         dest='perl',
-        help=('the .po file created with PERL wmlxgettext ' +
+        help=('the .po file created with PERL wmlxgettext '
                '[**REQUIRED ARGUMENT**]')
     )
     parser.add_argument(
@@ -34,7 +34,7 @@ def commandline(args):
         default='./python.po',
         required=True,
         dest='python',
-        help=('the .po file created with PYTHON3 wmlxgettext ' +
+        help=('the .po file created with PYTHON3 wmlxgettext '
                '[**REQUIRED ARGUMENT**]')
     )
     parser.add_argument(
@@ -42,7 +42,7 @@ def commandline(args):
         default='./python_reordered.po',
         required=True,
         dest='outfile',
-        help=('reordered output file (path and name) ' +
+        help=('reordered output file (path and name) '
                '[**REQUIRED ARGUMENT**]')
     )
     return parser.parse_args(args)
@@ -52,8 +52,8 @@ def commandline(args):
 def main():
     args = commandline(sys.argv[1:])
     sentlist = dict()
-    fi = open(os.path.realpath(os.path.normpath(args.python)), 'r' )
-    fo = open(os.path.realpath(os.path.normpath(args.outfile)), 'w' )
+    fi = open(os.path.realpath(os.path.normpath(args.python)), 'r')
+    fo = open(os.path.realpath(os.path.normpath(args.outfile)), 'w')
     finfo = None
     wmlinfo = None
     mystring = None
