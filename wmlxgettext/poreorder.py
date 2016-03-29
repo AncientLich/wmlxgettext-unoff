@@ -38,6 +38,14 @@ def commandline(args):
                '[**REQUIRED ARGUMENT**]')
     )
     parser.add_argument(
+        '--log', 
+        default=None,
+        dest='logfile',
+        help=('(optional) output file where every error messages will be saved.'
+              '\nNOTE: every error will be appended to the existing file (if '
+              'any), so it is HIGLY suggested to save the log to a new file')
+    )
+    parser.add_argument(
         '-o', 
         default='./python_reordered.po',
         required=True,
@@ -52,18 +60,38 @@ def commandline(args):
 def main():
     args = commandline(sys.argv[1:])
     sentlist = dict()
-    fi = open(os.path.realpath(os.path.normpath(args.python)), 'r')
-    fo = open(os.path.realpath(os.path.normpath(args.outfile)), 'w')
+    fi = None
+    fo = None
+    try:
+        fi = open(os.path.realpath(os.path.normpath(args.python)), 'r', 
+                  encoding='utf-8')
+    except OSError as e:
+        errmsg = ('fatal error: cannot open ' + e.filename + 
+                  ' (' + e.args[1] + ')' )
+        print(errmsg, file=sys.stderr)
+        sys.exit(1)
+    try:
+        fo = open(os.path.realpath(os.path.normpath(args.outfile)), 'w',
+                  encoding='utf-8')
+    except OSError as e:
+        errmsg = ('fatal error: cannot create ' + e.filename + 
+                  ' (' + e.args[1] + ')' )
+        print(errmsg, file=sys.stderr)
+        sys.exit(1)
     finfo = None
     wmlinfo = None
     mystring = None
     is_multiline = False
-    lineno = 0
+    actual_header_started = False
+    header_skipped = False
     for xline in fi:
         xline = xline.strip('\n\r')
-        lineno += 1
-        if lineno <= 12:
+        if not header_skipped:
             print(xline, file=fo)
+            if not actual_header_started and xline == 'msgid ""':
+                actual_header_started = True
+            elif actual_header_started and '"' not in xline:
+                header_skipped = True
         else:
             # storing comments for translator (wmlinfos)
             m = re.match(r'#\.\s+(.+)', xline)
@@ -126,8 +154,17 @@ def main():
     for key, val in sentlist.items():
         if val.ismultiline:
             val.sentence = re.sub('^\n', '', val.sentence)
-    # opening perl file, so we will know the order that we will follow
-    fi = open(os.path.realpath(os.path.normpath(args.perl)), 'r' )
+    # Now it is time to open the perl file
+    # perl file will allow us to know the order that we will follow
+    # in the final output file
+    try:
+        fi = open(os.path.realpath(os.path.normpath(args.perl)), 'r',
+                  encoding='utf-8')
+    except OSError as e:
+        errmsg = ('fatal error: cannot open ' + e.filename + 
+                  ' (' + e.args[1] + ')' )
+        print(errmsg, file=sys.stderr)
+        sys.exit(1)
     mystring = None
     lineno = 0
     for xline in fi:
@@ -139,13 +176,29 @@ def main():
                 # ended, so we have the complete key that we will 
                 # search in the sentlist dictionary. 
                 # So we can get the PoCommentedString with sentlist.get()
-                # and we can write it into the .po file
+                # and we can write it into the reordered .po file
                 postring = sentlist.get(mystring.lower())
                 if postring is None:
                     print("error: cannot find:", mystring, file=sys.stderr)
-                    sys.exit(1)
-                postring.write(fo, False)
-                print("", file=fo)
+                    if args.logfile is not None:
+                        logfile = None
+                        try:
+                            logfile = open(args.logfile, 'a', encoding='utf-8')
+                        except OSError as e:
+                            errmsg = ('cannot write on file ' + e.filename + 
+                                      ' (' + e.args[1] + ')' )
+                            print('fatal error:', errmsg, file=sys.stderr)
+                            sys.exit(1)
+                        print('[cannot find]:', mystring, file=logfile)
+                        print('', file=logfile)
+                        logfile.close()
+                else:
+                    # poreorder always create non-fuzzy strings, since perl
+                    # pot file will be always non-fuzzy. So why the second
+                    # parameter (is_fuzzy?) of postring.write is setted 
+                    # to False
+                    postring.write(fo, False)
+                    print("", file=fo)
                 mystring = None
             # on msgid (and following lines) we need to store the string
             rx = re.compile(r'(?:msgid\s+)?"(.*)', re.I)
