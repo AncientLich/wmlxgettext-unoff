@@ -147,8 +147,11 @@ removing all the files previously created:
 
 If you never runned wescheck.py you can notice that the data/cache/logs,
 data/cache/perl, data/cache/python, data/cache/reordered, and data/results
-will contain 'empty' files.
+will contain a file (wich it is actually an empty fake file).
 
 Those fake files are required in order to allow git to track the data directory
 and its own subdirectories.
-All those files will be removed by wescheck during the cleaning step.
+All those files will be removed by wescheck during the cleaning step. They
+will be replaced with the actual files (plus others).
+In this way, when you use wescheck (that will modify all data/cache and
+data/result files), all files added will be ignored by .gitignore
