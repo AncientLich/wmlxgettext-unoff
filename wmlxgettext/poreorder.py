@@ -189,7 +189,8 @@ def main():
                                       ' (' + e.args[1] + ')' )
                             print('fatal error:', errmsg, file=sys.stderr)
                             sys.exit(1)
-                        print('[cannot find]:', mystring, file=logfile)
+                        print('[', args.python, ']: cannot find: <<\n', 
+                              mystring, '\n>>', file=logfile)
                         print('', file=logfile)
                         logfile.close()
                 else:

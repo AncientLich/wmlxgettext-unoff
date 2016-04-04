@@ -13,8 +13,9 @@ However:
    * wmlxgettext/poreorder.py is not a part of the wmlxgettext sources but it
      is a little utility used to help to verify that the output produced by 
      wmlxgettext is safe.
-   * test_wmlxgettext.py and the _test directory contains the unittests used
-     while wmlxgettext was developed
+   * wmlxgettext/test_wmlxgettext.py and the _test directory contains the 
+     unittests used while wmlxgettext was developed (so they could be breaked
+     now).
    
 So the real sources, in the wmlxdirectory, are:
    * wmlxgettext.py
@@ -35,3 +36,7 @@ under the "docs/source" directory of this repository
 (only makefile missed, but it can be created with sphinx using the 
 sphinx-quickstart utility).
 
+------------------------
+
+Another test tool is provided: wescheck.py (this time in the main main folder
+of this repository and not in the wmlxgettext directory). See wescheck_help.txt

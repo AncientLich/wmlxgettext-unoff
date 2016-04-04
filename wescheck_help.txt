@@ -1,0 +1,154 @@
+INDEX:
+    #1. WesCheck.py debug utility for wmlxgettext
+    #2. How to use
+    #3. What wescheck.py does, step by step
+    #4. Final Note
+    
+
+
+---------------------------------------------------------------------------
+#1. WesCheck.py debug utility for wmlxgettext
+---------------------------------------------------------------------------
+
+This utility, more or less, act like the pot-update build target of the wesnoth
+source building, and compares the results we could obtain using the
+perl wmlxgettext (on wesnoth source directory)
+and the python wmlxgettext (this version, currently unofficial)
+
+NOTE: This tool can be runned only on Linux and Mac.
+      (it uses unix tools like bash, diff, and it subprocess python script
+       calling only the script name, thank of the shabang;
+       It uses also ANSI escape sequences, for changing colors and
+       adjusting cursor position)
+
+
+
+----------------------------------------------------------------------------
+#2. How to use
+----------------------------------------------------------------------------
+
+./wescheck.py --wesnoth PATH_OF_WESNOTH_SOURCE_ROOTDIR
+
+(NOTE: The --wesnoth option is required only the first time you use wecheck.py.
+       After the very first time, the --wesnoth option can be omitted,
+       becouse wescheck will be able to load the path of the wesnoth source
+       from its own cache (data/cache).
+       Every time you use the --wesnoth option, the path stored in the cache
+       will be updated with the new value).
+
+-----
+
+When the script ends its work (it require some time...) you can go to
+data/results and read the files created there:
+    
+    - perl_wmlx.err:  all error and warning messages returned by PERL 
+                      wmlxgettext, assembled in this unique file
+    - python_wmlx.err:  all error and warning messages returned by PERL 
+                        wmlxgettext, assembled in this unique file
+    - poreorder.err: If exists, than poreorder.py displayed at least an error.
+                     This is a logfile that will contain ALL the error messages
+                     returned by poreorder.py
+    - normal.diff: the result of diff -ruN original/ new/,
+                   where original/ is the directory containing the .po files
+                                   created by PERL wmlxgettext
+                   and new/ is the directory containing the .po files created
+                                   by PYTHON wmlxgettext
+    - reordered.diff: the result of diff -ruN original/ new/,
+                   where original/ is the directory containing the .po files
+                                   created by PERL wmlxgettext
+                   and new/ is the directory containing the .po files created
+                                   by PYTHON wmlxgettext, REORDERED
+                                   (with poreorder.py) in the same order as
+                                   the perl pot files
+                                   
+You can also look at the intermediate files created by wescheck.py, if you want.
+All those files will be stored in data/cache.
+
+More in details, data/cache will contain:
+    [logs] = directory of all the error/warning messages, domain by domain,
+             returned by perl or python wmlxgettext. Files can be empty
+             (no error messages returned). 
+             You will NOT find here logs created poreorder.py since
+             poreorder.py directly create its logfile in data/result.
+    [perl] = .po files created by perl wmlxgettext
+    [python] = .po files created by python wmlxgettext
+    [reordered] = .po files created by python wmlxgettext, after being
+                  reordered by poreorder.py
+    wes.inf --> file containing the path of wesnoth source directory
+
+
+    
+------------------------------------------------------------------
+#3. What wescheck.py does, step by step
+------------------------------------------------------------------
+                      
+1) First of all wescheck.py clean the cache and the result directory,
+removing all the files previously created: 
+    this will allow to have a 'clean' result each time
+
+2) After that wescheck.py will search for wesnoth/po/<domain>/FINDCFG files.
+   In this way, wescheck will know:
+       - what are the domain names used by wesnoth core, that requires
+         wmlxgettext (domain directory without FINDCFG contain a pot file that
+                      is not created with wmlxgettext)
+       - what are the file names we must check for every single domain:
+           to do this, wescheck will invoke bash calling each FINDCFG script,
+           one by one (exactly like it should happen on pot-update target)
+           
+3) Now wescheck knows domains and filenames that must be parsed by each domain,
+   wescheck will launch perl wmlxgettext (wesnoth/utils/wmlxgettext) and python
+   wmlxgettext (./wmlxgettext/wmlxgettext.py) all times required to build 
+   a pot file for every domain:
+       - stdout (file output) will be redirected to data/cache/perl/<domain>.po
+         if we are launching perl wmlxgettext (data/cache/python/<domain>.po,
+         instead, if python wmlxgettext)
+       - stderr (error messages and warnings) will be redirected to
+         data/cache/logs/*.log
+   
+   NOTE: when calling --domain=wesnoth, --initialdomain=wmlxgettext option
+         flag is added, both in perl and in python wmlxgettext
+   NOTE: since the output error is redirected to a file (wich normally does not
+         happen), PYTHON wmlxgettext is executed disabling ansi escape 
+         sequences color with the option --no-ansi-colors, to avoid to have
+         strange symbols on error messages redirected from stderr to text files.
+         (the flag --no-ansi-color is not required at all if it was a standard
+          run where stderr is not redirected, as usual happens)
+   NOTE: PYTHON wmlxgettext, as you know, could create pot files without output
+         redirection, and PYTHON wmlxgettext could be used without explicitly
+         telling the list of the files that must parsed.
+         However wescheck will run wmlxgettext exactly as perl wmlxgettext.
+         So PYTHON wmlxgettext is called with an explicit list of files and
+         with output redirection, exactly as it should happen when running the 
+         pot-update target
+
+4) When perl and python files are created, wescheck will call poreorder.py,
+   one time for each domain, creating the reordered version of the python
+   po files in the data/reordered directory.
+   Every time poreorder.py will encounter an error, the error will be appened
+   to the logfile created by poreorder.py (on data/results/poreorder.err).
+   [stdout and stderr will be redirected to /dev/null since they are useless
+    and disturbing]
+
+5) And finally wescheck will:
+     - assemble all data/cache/logs/perl_*.log files in 
+         data/results/perl_wmlx.err file
+     - assemble all data/cache/logs/python_*.log files in 
+         data/results/perl_wmlx.err file
+     - create a .diff file comparing data/cache/perl with data/cache/python
+       (data/results/normal.diff)
+     - create a .diff file comparing data/cache/perl with data/cache/reordered
+       (data/results/reordered.diff)
+
+
+
+---------------------------------------------------------------------------
+#4. Final Note
+---------------------------------------------------------------------------
+
+If you never runned wescheck.py you can notice that the data/cache/logs,
+data/cache/perl, data/cache/python, data/cache/reordered, and data/results
+will contain 'empty' files.
+
+Those fake files are required in order to allow git to track the data directory
+and its own subdirectories.
+All those files will be removed by wescheck during the cleaning step.
