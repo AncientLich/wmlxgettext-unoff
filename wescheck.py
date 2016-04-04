@@ -186,6 +186,14 @@ def main():
     wesnoth = None
     domains = None
     filelist = None
+    # creating data and subfolders (if data still does not exist)
+    try:
+        for i in ['data/cache/logs', 'data/cache/perl',
+                  'data/cache/python', 'data/cache/reordered',
+                  'data/results']:
+            os.makedirs(os.path.realpath(i))
+    except FileExistsError:
+        pass
     if args.wesnoth is not None:
         wesnoth = os.path.realpath(os.path.normpath(args.wesnoth)) 
     wesnoth, domains = wescache(

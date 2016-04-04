@@ -2,7 +2,6 @@ INDEX:
     #1. WesCheck.py debug utility for wmlxgettext
     #2. How to use
     #3. What wescheck.py does, step by step
-    #4. Final Note
     
 
 
@@ -35,6 +34,9 @@ NOTE: This tool can be runned only on Linux and Mac.
        from its own cache (data/cache).
        Every time you use the --wesnoth option, the path stored in the cache
        will be updated with the new value).
+
+NOTE: The first time you run wescheck.py, it will create a directory data
+      and its subdirectories. 
 
 -----
 
@@ -145,13 +147,9 @@ removing all the files previously created:
 #4. Final Note
 ---------------------------------------------------------------------------
 
-If you never runned wescheck.py you can notice that the data/cache/logs,
-data/cache/perl, data/cache/python, data/cache/reordered, and data/results
-will contain a file (wich it is actually an empty fake file).
+If you never runned wescheck.py you can notice that the data directory
+(and so... data/cache/logs, data/cache/perl, data/cache/python, 
+ data/cache/reordered, and data/results) does not exist.
 
-Those fake files are required in order to allow git to track the data directory
-and its own subdirectories.
-All those files will be removed by wescheck during the cleaning step. They
-will be replaced with the actual files (plus others).
-In this way, when you use wescheck (that will modify all data/cache and
-data/result files), all files added will be ignored by .gitignore
+The data directory (and its subdirectories listed above) will be created by
+wescheck.py the first time you execute it.
