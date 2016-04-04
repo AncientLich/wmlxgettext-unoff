@@ -57,7 +57,7 @@ def checksentence(mystring, finfo, *, islua=False):
         return 1
     elif warnall() and not islua:
         if "}" in mystring:
-            wmsg = ("found a translatable string containing a WML macro." +
+            wmsg = ("found a translatable string containing a WML macro. "
                     " Translation for this string will NEVER work")
             wmlwarn(finfo, wmsg)
             return 2
@@ -182,15 +182,6 @@ class PendingWmlString:
                                              addition=_pending_addedinfo)
         _pending_overrideinfo = None
         _pending_addedinfo = None
-
-
-
-def lua3_endrx():
-    global _pending_luastring
-    if _pending_luastring is None:
-        return re.compile(r']]')
-    else:
-        return re.compile(_pending_luastring.rx_close)
 
 
 
