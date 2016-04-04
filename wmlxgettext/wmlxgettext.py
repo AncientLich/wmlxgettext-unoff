@@ -59,7 +59,7 @@ def commandline(args):
         '-o',
         default=None,
         dest='outfile',
-        help= ('Destination file. By default the output ' +
+        help= ('Destination file. By default the output '
                'will be printed on stdout')
     )
     parser.add_argument(
@@ -67,33 +67,33 @@ def commandline(args):
         default='wmlxgettext',
         required=True,
         dest='domain',
-        help= ('The textdomain (on WML/lua file) wich contains the ' +
-               'strings that will be actually translated ' +
+        help= ('The textdomain (on WML/lua file) wich contains the '
+               'strings that will be actually translated '
                '[**REQUIRED ARGUMENT**]')
     )
     parser.add_argument(
         '--directory', 
         default='.',
         dest='start_path',
-        help=('Complete path of your "start directory". ' +
-              'The path to every source file should start from this ' +
+        help=('Complete path of your "start directory". '
+              'The path to every source file should start from this '
               'directory.')
     )
     parser.add_argument(
         '--initialdomain', 
         default='wesnoth',
         dest='initdom',
-        help=('Initial domain value on WML/lua file when no textdomain ' +
-              'setted in that WML/lua file.\nBy default it is equal to ' +
+        help=('Initial domain value on WML/lua file when no textdomain '
+              'setted in that WML/lua file.\nBy default it is equal to '
               '"wesnoth" and usually you don\'t need to change this value')
     )
     parser.add_argument(
         '--package-version',
         default='PACKAGE VERSION',
         dest='package_version',
-        help=('Version number of your wesnoth add-on. You don\'t actually ' +
-              'require to set this option since you can directly edit the ' +
-              'po file produced by wmlxgettext. However this option could ' +
+        help=('Version number of your wesnoth add-on. You don\'t actually '
+              'require to set this option since you can directly edit the '
+              'po file produced by wmlxgettext. However this option could '
               'help you to save a bit of time')
     )
     parser.add_argument(
@@ -101,10 +101,10 @@ def commandline(args):
         action='store_false',
         default=True,
         dest='ansi_col',
-        help=("By default warnings are displayed with colored text. You can " +
-              "disable this feature using this flag.\n" +
-              "This option doesn't have any effect on windows, since it " +
-              "doesn't support ansi colors (on windows colors are ALWAYS" +
+        help=("By default warnings are displayed with colored text. You can "
+              "disable this feature using this flag.\n"
+              "This option doesn't have any effect on windows, since it "
+              "doesn't support ansi colors (on windows colors are ALWAYS"
               ' disabled).')
     )
     parser.add_argument(
@@ -119,17 +119,17 @@ def commandline(args):
         action='store_true',
         default=False,
         dest='fuzzy',
-        help=("If you specify this flag, all sentences contained on the POT " +
-              "file created by wmlxgettext will be setted as fuzzy.\n" +
+        help=("If you specify this flag, all sentences contained on the POT "
+              "file created by wmlxgettext will be setted as fuzzy.\n"
               "By default sentences are NOT setted as fuzzy")
     )
     parser.add_argument(
         '--recursive',
         action='store_true',
         default=False,
-        help=("If this option is used, wmlxgettext will scan recursively the" +
-              " directory setted on the '--directory' parameter. " +
-              "If this option is used, EXPLICIT LIST of files will be " +
+        help=("If this option is used, wmlxgettext will scan recursively the"
+              " directory setted on the '--directory' parameter. "
+              "If this option is used, EXPLICIT LIST of files will be "
               "ignored.") 
     )
     parser.add_argument(
@@ -152,22 +152,28 @@ def main():
     sentlist = dict()
     fileno = 0
     pywmlx.statemachine.setup(sentlist, args.initdom, args.domain)
+    if args.warnall is True and args.outfile is None:
+        pywmlx.wmlwarn('command line warning', 'Writing the output to stdout '
+                       '(and then eventually redirect that output to a file) '
+                       'is a deprecated usage. Please, consider to use the '
+                       '"-o <outfile.po>" option, instead of using the '
+                       'output redirection')
     filelist = None
     if args.recursive is False and args.filelist is None:
-        pywmlx.wmlerr("bad command line", "FILELIST must not be empty. " +
-               "Please, run wmlxgettext again and, this time, add some file " +
+        pywmlx.wmlerr("bad command line", "FILELIST must not be empty. "
+               "Please, run wmlxgettext again and, this time, add some file "
                "in FILELIST or use the --recursive option.")
     elif args.recursive is False and len(args.filelist) <= 0:
-        pywmlx.wmlerr("bad command line", "FILELIST must not be empty. " +
-               "Please, run wmlxgettext again and, this time, add some file " +
+        pywmlx.wmlerr("bad command line", "FILELIST must not be empty. " 
+               "Please, run wmlxgettext again and, this time, add some file "
                "in FILELIST or use the --recursive option.")
     elif args.recursive is False:
         filelist = args.filelist
     # the following elif cases implicitly expexcts that args.recursive is True
     elif args.filelist is not None:
         if len(args.filelist) > 0:
-            pywmlx.wmlwarn("command line warning", "Option --recursive was " +
-                "used, but FILELIST is not empty. All extra file listed in " +
+            pywmlx.wmlwarn("command line warning", "Option --recursive was "
+                "used, but FILELIST is not empty. All extra file listed in "
                 "FILELIST will be ignored.")
         # if we use the --recursive option we recursively scan the add-on
         # directory. 
@@ -186,21 +192,20 @@ def main():
     # if args.recursive is True and args.filelist is None:
     else:
         startPath, filelist = pywmlx.autof.autoscan(startPath)
-    for fx in filelist:
-        fileno += 1
+    for fileno, fx in enumerate(filelist):
         fname = os.path.join(startPath, os.path.normpath(fx))
         is_file = os.path.isfile(fname)
         if is_file:
             infile = None
             try: 
-                infile = open(fname, 'r', encoding="utf8")
+                infile = open(fname, 'r', encoding="utf-8")
             except OSError as e:
                 errmsg = 'cannot read file: ' + e.args[1]
                 pywmlx.wmlerr(e.filename, errmsg, OSError)
-            if fname[-4:].lower() == '.cfg':
+            if fname.lower().endswith('.cfg'):
                 pywmlx.statemachine.run(filebuf=infile, fileref=fx, 
                             fileno=fileno, startstate='wml_idle', waitwml=True)
-            if fname[-4:].lower() == '.lua':
+            if fname.lower().endswith('.lua'):
                 pywmlx.statemachine.run(filebuf=infile, fileref=fx, 
                             fileno=fileno, startstate='lua_idle', waitwml=False)
             infile.close()
@@ -210,7 +215,7 @@ def main():
     else:
         outfile_name = os.path.realpath(os.path.normpath(args.outfile))
         try:
-            outfile = open(outfile_name, 'w', encoding="utf8")
+            outfile = open(outfile_name, 'w', encoding="utf-8")
         except OSError as e:
             errmsg = 'cannot write file: ' + e.args[1]
             pywmlx.wmlerr(e.filename, errmsg, OSError)
@@ -240,7 +245,8 @@ def main():
 
 
 
-if __name__ == "__main__":   main()
+if __name__ == "__main__":
+    main()
 
 
 
