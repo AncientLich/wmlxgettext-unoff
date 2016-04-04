@@ -127,10 +127,13 @@ class WmlTagState:
                                        lineno)
             if closetag == '[/lua]':
                 pywmlx.state.machine._pending_luafuncname = None
+                pywmlx.state.machine._on_luatag = False
             # xdebug_str = closetag + ': ' + str(lineno)
         else:
             opentag = '[' + match.group(2) + ']'
             pywmlx.nodemanip.newnode(opentag)
+            if(opentag == '[lua]'):
+                pywmlx.state.machine._on_luatag = True
             # xdebug_str = opentag + ': ' + str(lineno)
         # print(xdebug_str, file=xdebug)
         # xdebug.close()
@@ -207,14 +210,41 @@ class WmlStr10:
 
 
 
+# Only if the symbol '<<' is found inside a [lua] tag, than it means we are
+# actually starting a lua code.
+# It can happen that WML use the '<<' symbol in a very different context
+# wich has nothing to do with lua, so switching to the lua states in that
+# case can lead to problems.
+# This happened on the file data/gui/default/widget/toggle_button_orb.cfg
+# on wesnoth 1.13.x, where there is this line inside the first [image] tag:
+#
+#     name = "('buttons/misc/orb{STATE}.png" + <<~RC(magenta>{icon})')>>
+#
+# In that case, after 'name' there is a WML string 
+# "('buttons/misc/orb{STATE}.png"
+# And after that you find a cuncatenation with a literal string 
+# <<~RC(magenta>{icon})')>>
+#
+# That second string has nothing to do with lua, and, most importantly, if 
+# it is parsed with lua states, it return an error... why?
+# Semply becouse of the final ' symbol, wich is valid symbol, in lua, for
+# opening a new string; but, in that case, there is not an opening string,
+# but a ' symbol that must be used literally.
+#
+# This is why we use a global var _on_luatag in state.py wich is usually False.
+# it will be setted True only when opening a lua tag (see WmlTagState)
+# it will be setted to False again when the lua tag is closed (see WmlTagState)
 class WmlGoluaState:
     def __init__(self):
         self.regex = re.compile(r'.*?<<\s*')
         self.iffail = 'wml_final'
     
     def run(self, xline, lineno, match):
-        xline = xline [ match.end(): ]
-        return (xline, 'lua_idle')
+        if pywmlx.state.machine._on_luatag:
+            xline = xline [ match.end(): ]
+            return (xline, 'lua_idle')
+        else:
+            return (xline, 'wml_final')
 
 
 

@@ -13,26 +13,68 @@ import pywmlx.nodemanip
 
 
 
-_dictionary = None
-_states = None
-_initialdomain = None
-_currentdomain = None
-_domain = None
-_startstate = None
-_xline = None
-_waitwml = True
+# --------------------------------------------------------------------
+#  PART 1: machine.py global variables
+# --------------------------------------------------------------------
 
+
+
+# dictionary of pot sentences
+_dictionary = None
+# dictionary containing lua and WML states
+_states = None
+# initialdomain value (setted with --initialdomain command line option)
+_initialdomain = None
+# the current domain value when parsing file (changed by #textdomain text)
+_currentdomain = None
+# the domain value (setted with --domain command line option)
+_domain = None
+# this boolean value will be usually:
+#   True (when the file is a WML .cfg file)
+#   False (when the file is a .lua file)
+_waitwml = True
+# this boolean value is very useful to avoid a possible bug
+# verified in a special case 
+# (see WmlGoluaState on wml_states.py for more details)
+_on_luatag = False
+
+# ---------
+
+# pending additional infos for translators (# po: addedinfo)
 _pending_addedinfo = None
+# pending override wmlinfo for translators (# po-override: overrideinfo)
 _pending_overrideinfo = None
+# type of pending wmlinfo: 
+# it can be None or it can have an actual value.
+# Possible actual values are: 'speaker', 'id', 'role', 'description', 
+#                             'condition', 'type', or 'race'
 _pending_winfotype = None
 
+# ----------
+
+# the last function name encountered in a lua code (if any).
+# If no lua functions already encountered, this var will be None
 _pending_luafuncname = None
 
+# ----------
+
+# pending lua/wml string (they will be evaluated, and if translatable it will
+# be added in _dictionary
 _pending_luastring = None
 _pending_wmlstring = None
 
+# ----------
+
+# counting line number
 _current_lineno = 0
+# lineno_sub helps to set the right orderid of the future PoCommentedString
 _linenosub = 0
+
+
+
+# --------------------------------------------------------------------
+#  PART 2: machine.py functions and classes
+# --------------------------------------------------------------------
 
 
 
@@ -213,7 +255,9 @@ def run(*, filebuf, fileref, fileno, startstate, waitwml=True):
     global _currentdomain
     global _dictionary
     global _pending_luafuncname
+    global _on_luatag
     _pending_luafuncname = None
+    _on_luatag = False
     # cs is "current state"
     cs = _states.get(startstate)
     _current_lineno = 0
