@@ -74,15 +74,9 @@ def get_commands(wesnoth, domains, perl_wmlx, py_wmlx):
         domainname = '--domain=' + domain
         cmd = [perl_wmlx, wesnothdir, domainname]
         if domain == 'wesnoth':
-            cmd.append('--initialdomain=wmlxgettext')
-        try:        
-            for f in filelist:
-                cmd.append(f)
-        except:
-            print(domain)
-            print(filelist)
-            print('----------')
-            sys.exit(1)
+            cmd.append('--initialdomain=wmlxgettext')       
+        for f in filelist:
+            cmd.append(f)
         perlcommands[domain] = list(cmd)
         cmd = None
         cmd = [py_wmlx, '--no-ansi-colors', wesnothdir, domainname]
@@ -116,7 +110,11 @@ def wescache(cachefile, wesnoth):
         try:
             cache = open(cachefile, 'w', encoding='utf-8')
         except OSError as e:
-            errmsg = ('\033[31mfatal error:\033[0m cannot write: ' + 
+            print('\033[1A\033[36m(1/4)\033[0m cleaning directories and '
+                  'calculating commands... \033[31mFailed      \033[0m', 
+                  file=sys.stderr)
+            print('', file=sys.stderr)
+            errmsg = ('\033[31merror:\033[0m cannot write: ' + 
                          e.filename + ' (' + e.args[1] + ')' )
             print(errmsg, file=sys.stderr)
             sys.exit(1)
@@ -126,9 +124,14 @@ def wescache(cachefile, wesnoth):
         try:
             cache = open(cachefile, 'r', encoding='utf-8')
         except OSError:
+            print('\033[1A\033[36m(1/4)\033[0m cleaning directories and '
+                  'calculating commands... \033[31mFailed      \033[0m', 
+                  file=sys.stderr)
+            print('', file=sys.stderr)
             print('\033[31merror:\033[0m wesnoth path is neither setted with '
-                  '--wesnoth option, nor it is stored in cache.\n'
-                  'Please run ./wescheck --wesnoth WESNOTH_SRC_DIR',
+                  '--wesnoth option, nor it is stored in cache.\n\n'
+                  '\033[31mTry again with: \033[36m./wescheck --wesnoth '
+                  'WESNOTH_SRC_PATH\033[0m\n',
                   file=sys.stderr)
             sys.exit(1)
         for xline in cache:
