@@ -151,7 +151,8 @@ def main():
     startPath = os.path.realpath(os.path.normpath(args.start_path))
     sentlist = dict()
     fileno = 0
-    pywmlx.statemachine.setup(sentlist, args.initdom, args.domain)
+    pywmlx.statemachine.setup(sentlist, args.initdom, args.domain, 
+                              args.warnall)
     if args.warnall is True and args.outfile is None:
         pywmlx.wmlwarn('command line warning', 'Writing the output to stdout '
                        '(and then eventually redirect that output to a file) '

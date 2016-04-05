@@ -2,13 +2,16 @@ Supported Options for WML/Lua files
 ***********************************
 
 When you create an add-on, you may want to see it translated in several 
-languages. You need to create your own .po file.
-
+languages. You need to create your own .po file. 
 This short page assume you already know how to write a WML file (See also the 
 `Official WML Reference <https://wiki.wesnoth.org/Referencewml>`_).
 
-Here we add some other informations useful for a good usage of the wmlxgettext
-tool
+Here you will find some additional informations, useful for a good usage of 
+wmlxgettext.
+
+.. note::
+  Paragraphs from 1.1 to 1.4 will talk about WML code;
+  paragraphs 1.5 and 1.6 will talk about Lua code.
 
 ================================
 #textdomain <new_current_domain>
@@ -135,22 +138,48 @@ infact, not displayed since it is replaced by ``# po-override:``).
    sentence. However you can use one or more ``# po:`` special comments 
    together with the ``# po-override:`` special comment.
 
+
+===========================
+Changing Domain in Lua code
+===========================
+
+As explained before, on WML code, you could change the current domain with
+the WML preprocessor directive `#textdomain <new_current_domain>`_.
+
+When writing lua code, instead, the same action is performed in a very
+different way, using this code:
+
+.. code-block:: lua
+
+  local _ = wesnoth.textdomain('wesnoth-xyz')
+
+.. note:
+  
+  *xyz* can be everything. We will use *xyz* only as an example.
+
+In the example showed above we changed, in lua code, the current domain value
+to ``wesnoth-xyz``.
+  
+
 =======================
 Special comments on Lua
 =======================
 
-``#textdomain``, ``# po:`` and ``# po-override:`` can be also used inside a 
-Lua code.
-
-On lua code, those *"instructions"* must be preceded by the ``--`` symbols, 
-wich mark the start of a Lua comment.
-
-So, on lua code you can use:
+On lua code you can also use those special comments BEFORE the translatable
+string that will require an additional or overridden info:
    
-   * ``-- #textdomain <new-current-domain>``
    * ``-- # po: <additional info for translator>``
    * ``-- # po-override: <info that overrides the default info>``
 
+Those special comments works in the same way as the ``# po:`` and 
+``# po-ovverride:`` special comments supported in WML code (see paragraphs
+1.3 and 1.4)
+
 .. note::
    
-   ``# wmlxgettext:`` is instead **unsupported** inside a lua code (useless).
+   The special WML comment ``# wmlxgettext:`` is instead **unsupported** 
+   in lua code. 
+   
+   (*It is needed in WML code to avoid errors when tags are
+   unbalanced on purpose, so it is useless in lua code, wich is a
+   procedural language and not a 'tagged' language*).

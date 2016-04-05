@@ -66,21 +66,9 @@ This is what you have to write into the ``--domain`` parameter::
 
 With the option ``--directory``, wmlxgettext will know the starting path
 where all following files/scandirs should be searched.
+This is a fake example for windows::
 
-In the real life, it is suggested to reach the directory ``data/add-ons`` 
-where all wesnoth add-ons (including yours) are stored, and use 
-``--directory=.``
-
-Or, otherwise, if you run ``wmlxgettext`` using another directory you could
-write the absoulte path where your wesnoth add-ons is stored. 
-Here is a fake example for windows::
-  
-  --directory=c:\games\wesnoth\userdata\data\add-ons
-
-As explained here, to correctly setup the ``--directory`` option, you should
-**not** write the directory path where your addon is stored, **but** 
-you should write the directory path where the wesnoth *add-ons*
-directory (*wich contains all add-ons including yours*) is located.
+  --directory=c:\games\wesnoth\userdata\data\add-ons\YOUR_ADDON_DIRECTORY
 
 -----------
 --recursive
@@ -152,7 +140,8 @@ This means that those two files will be searched and parsed:
   DON'T use the ``--recursive`` option if you want to explicitly tell the 
   list of the files to parse. If the option ``--recursive`` is used, the 
   explicit list of file will be ignored.
-  
+
+
 ==============================================================
 Wmlxgettext with explicit list of files and output redirection
 ==============================================================
@@ -215,8 +204,7 @@ previous paragraphs:
     added to the python GUI for wesnoth tools (since the ansi escape colors 
     could be not desired by the GUI)
   
-Finally there is a last option, supported for retro-compatibility, that it is
-**not** actually useful:
+Finally there is a last option, that an end-used should **never** use:
 
   * ``--initialdomain=INIT_DOMAIN``: It tells the name of the 
     current domain when no ``#textdomain`` still found in .cfg/.lua file.

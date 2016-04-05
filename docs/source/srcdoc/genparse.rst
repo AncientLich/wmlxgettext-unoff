@@ -502,8 +502,7 @@ addon (Invasion from the Unknown) ).
    --       showing in this sample code
    -- original code can be found on file: lua/gui/bug.lua:163
    local function preshow()
-        -- #textdomain wesnoth-Invasion_from_the_Unknown
-        local _ = wesnoth.textdomain "wesnoth-Invasion_from_the_Unknown"
+        local _ = wesnoth.textdomain('wesnoth-Invasion_from_the_Unknown')
         local msg = _ "An inconsistency has been detected"
 
         if report then
@@ -521,10 +520,16 @@ Wmlxgettext does not *"parse"* .lua code, but:
      name found in the .lua file
 
 Lua code used on wesnoth add-ons can recognize those directives:
-       
-   * ``#textdomain <domain>`` to change the current domain
+   
    * ``# po: <addedinfo>`` to add infos to write to translators
    * ``# po-override: <override>`` to override wmlinfo
+
+Unlike WML code the textdomain is changed with the line
+
+.. code-block:: lua
+   
+   local _ = wesnoth.textdomain('wesnoth-Invasion_from_the_Unknown')
+
 
 .. note::
    
@@ -532,15 +537,15 @@ Lua code used on wesnoth add-ons can recognize those directives:
    inside lua comments (introduced by ``--``), like the following code 
    sample::
       
-      -- #textdomain my-domain-name
+      -- # po: my additional info
    
    You must write **ONE** directive at time, into a new line::
       
       -- this is a good example
-      -- #textdomain my-domain-name
+      -- # po: my additional info
       
       -- this is, instead, a bad example
-      somecode = somevalue -- #textdomain my-domain-name
+      somecode = somevalue -- # po: my additional info
 
 The directive ``# wmlxgettext: <WML code>`` is instead **not** supported in Lua 
 code, since it is required by wmlxgettext only when parsing WML code (usually 

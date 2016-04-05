@@ -18,7 +18,8 @@ import pywmlx.nodemanip
 # --------------------------------------------------------------------
 
 
-
+# True if --warnall option is used
+_warnall = False
 # dictionary of pot sentences
 _dictionary = None
 # dictionary containing lua and WML states
@@ -235,13 +236,15 @@ def addstate(name, value):
 
 
 
-def setup(dictionary, initialdomain, domain):
+def setup(dictionary, initialdomain, domain, wall):
     global _dictionary
     global _initialdomain
     global _domain
+    global _warnall
     _dictionary = dictionary
     _initialdomain = initialdomain
     _domain = domain
+    _warnall = wall
     setup_luastates()
     setup_wmlstates()
 

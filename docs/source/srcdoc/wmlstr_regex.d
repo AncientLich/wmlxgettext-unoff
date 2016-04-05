@@ -15,7 +15,7 @@ digraph wmlstr {
    question [ shape="diamond",
        label="Are there\nquotes (\")\nbefore the [tag]?"
    ]
-   match [ 
+   match [ fillcolor="green",
        label="regex matches:\n[tagname] will be collected\nby WmlTagState"
    ]
    nomatch [ 

@@ -397,17 +397,69 @@ Regexes used on Lua States
 Unlike WML states, we will not explain **all** the regexp used, since most of 
 them are **very similar** to the ones used on WML states
 
------------------------
-*"Preprocessor"* States
------------------------
+----------------
+LuaCheckdomState
+----------------
 
-``LuaCheckdomState``, ``LuaCheckpoState`` and ``LuaCommentState`` use regexpes 
-very similar to the ones used on `WmlCheckdomState`_, `WmlCheckpoState`_ and
-on `WmlCommentState`_.
+.. code-block:: python
+  
+  rx = (   r'\s*(local)?\s+_\s*=\s*wesnoth\s*\.\s*textdomain\s*'
+         r'''(?:\(\s*)?(["'])(.*?)\2''')
+  self.regex = re.compile(rx, re.I)
+
+The regular expression used by LuaCheckdomState is very long, and it is
+very different from the one used by WmlCheckdomState.
+Changing the current domain in lua code, infact, requires a very different
+syntax:
+
+.. code-block:: lua
+  
+  -- after executing the following line, the current domain
+  -- will be changed to: wesnoth-xyz
+  local _ = wesnoth.textdomain('wesnoth-xyz')
+
+It is now the time to explain deeply the regexp used by LuaCheckdomState::
+  
+  ^\s*(local)?\s+_\s*=\s*wesnoth\s*\.\s*textdomain\s*(?:\(\s*)?(["'])(.*?)\2
+
+The regexp can be dived in this way:
+  
+  * ``^\s*`` --> Arbitrary number of spaces or tabs at the start of the line.
+  * ``(local\s+)?`` --> Optional ``local`` keyword. It is captured (if exists) 
+    in group(1). If ``local`` keyword is not used and the ``--warnall`` command
+    line option is used, than a warning message is displayed.
+  * ``_\s*=\s*`` --> the underscore symbol (``_``) followed by equal (``=``).
+    Any number of spaces or tab can be placed between underscore and equal;
+    any mymber of spaces or tab can be also placed after the equal symbol.
+  * ``wesnoth\s*\.\s*textdomain\s*`` --> look for ``wesnoth.textdomain``.
+    Any number of spaces can be placed before and after the point symbol that
+    divides ``wesnoth`` and ``textdomain`` ;
+    any number of spaces can be placed after the ``textdomain`` word.
+  * ``(?:\(\s*)?`` --> This is a very important part of the regexp. This
+    non-capturing group will ensure that the regexp will
+    match when **zero or one** open paranthesis will follow
+    after ``wesnoth.textdomain``. The open parenthesis is, infact, optional.
+  * ``(["'])`` --> Then a single or a double quote is expected, and it will
+    captured on group(2)
+  * ``(.*?)`` --> The actual textdomain will be captured on group(3)
+  * ``\2`` --> the closing quote (what it was captured on group2, wich opened
+    the quote, must match be the same one that closes the quote)
+  
+.. note::
+  
+  Special thanks to celticminstrel for providing me this regexp.
+  
+
+----------------------
+Lua *"Comment"* States
+----------------------
+
+``LuaCheckpoState`` and ``LuaCommentState`` use regexpes 
+very similar to the ones used on `WmlCheckpoState`_ and `WmlCommentState`_.
 
 Here the differences:
    
-   * ``#textdomain``, ``# po:`` and ``# po-override:`` must be preceded by
+   * ``# po:`` and ``# po-override:`` must be preceded by
      the lua comment marker ``--`` followed by any number of spaces\tabs.
    * ``# wmlxgettext:`` is **not** supported on lua code (it is useless)
    * lua comment starts with ``--`` and not with ``#``
@@ -476,7 +528,7 @@ LuaStr03 State
 
 .. note:
     
-  Special thank to celticminstrel for improving my old regex into the
+  Special thanks to celticminstrel for improving my old regex into the
   current regex.
 
 LuaStr03 regexp can is equal to the following regexp rule::

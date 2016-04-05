@@ -1,6 +1,7 @@
 import re
 import pywmlx.state.machine
 from pywmlx.state.state import State
+from pywmlx.wmlerr import wmlwarn
 
 
 
@@ -24,12 +25,17 @@ class LuaIdleState:
 
 class LuaCheckdomState:
     def __init__(self):
-        self.regex = re.compile(r'\s*--.*?\s*#textdomain\s+(\S+)', re.I)
+        rx = (   r'\s*(local\s+)?_\s*=\s*wesnoth\s*\.\s*textdomain\s*'
+               r'''(?:\(\s*)?(["'])(.*?)\2''')
+        self.regex = re.compile(rx, re.I)
         self.iffail = 'lua_checkpo'
     
     def run(self, xline, lineno, match):
-        pywmlx.state.machine._currentdomain = match.group(1)
+        pywmlx.state.machine._currentdomain = match.group(3)
         xline = None
+        if match.group(1) is None and pywmlx.state.machine._warnall:
+            finfo = pywmlx.nodemanip.fileref + ":" + str(lineno)
+            wmlwarn(finfo, "function '_', in lua code, should be local.")
         return (xline, 'lua_idle')
 
 
