@@ -171,9 +171,13 @@ string that will require an additional or overridden info:
    * ``-- # po: <additional info for translator>``
    * ``-- # po-override: <info that overrides the default info>``
 
+.. note::
+  You can also use ``-- po:`` and ``-- po-override:``, instead of ``-- # po:``
+  and ``-- # po-override:``  Both forms are allowed.
+
 Those special comments works in the same way as the ``# po:`` and 
 ``# po-ovverride:`` special comments supported in WML code (see paragraphs
-1.3 and 1.4)
+1.3 and 1.4).
 
 .. note::
    

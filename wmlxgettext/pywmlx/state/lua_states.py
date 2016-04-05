@@ -42,7 +42,7 @@ class LuaCheckdomState:
 
 class LuaCheckpoState:
     def __init__(self):
-        self.regex = re.compile(r'\s*--.*?\s*#\s+(po-override|po):\s+(.+)', 
+        self.regex = re.compile(r'\s*--\s+(?:#\s+)?(po-override|po):\s+(.+)', 
                                 re.I)
         self.iffail = 'lua_comment'
     

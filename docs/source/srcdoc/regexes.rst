@@ -459,8 +459,8 @@ very similar to the ones used on `WmlCheckpoState`_ and `WmlCommentState`_.
 
 Here the differences:
    
-   * ``# po:`` and ``# po-override:`` must be preceded by
-     the lua comment marker ``--`` followed by any number of spaces\tabs.
+   * You can also use ``-- po:`` and ``-- po-override:`` or you can use
+     ``-- # po:`` and ``-- # po-override:`` (both forms are allowed).
    * ``# wmlxgettext:`` is **not** supported on lua code (it is useless)
    * lua comment starts with ``--`` and not with ``#``
 
