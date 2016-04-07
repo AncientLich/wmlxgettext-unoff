@@ -74,7 +74,7 @@ class WmlCheckdomState:
 
 class WmlCheckpoState:
     def __init__(self):
-        rx = r'\s*#\s+(wmlxgettext|po-override|po):\s+(.+)'
+        rx = r'\s*#\s*(wmlxgettext|po-override|po):\s+(.+)'
         self.regex = re.compile(rx, re.I)
         self.iffail = 'wml_comment'
     
