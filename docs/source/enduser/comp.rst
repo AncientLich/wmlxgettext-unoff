@@ -19,7 +19,8 @@ script), has its **pros**:
      file)
    * Can be used **also on windows** (requires python 3.x, however)
    * User is not forced to list, one by one, every file that wmlxgettext must
-     parse, but it can use instead the new ``--scandirs`` option.
+     parse, but it can use instead the new ``--recursive`` option;
+     wmlxgettext will search itself all .cfg and .lua files stored there.
    * Can be added to the python GUI for (used by all other wesnoth tools)
    * The code, even if complex and long, is more modular, and could be 
      fixed/changed/forked in an easier way
