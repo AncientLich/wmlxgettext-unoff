@@ -121,7 +121,7 @@ def main():
                 #    `#. infos` into wmlinfos list. So we not need to 
                 #     distinguish from wmlinfos and addedinfos. This is why
                 #     addedinfos is not used here.
-                sentlist[mystring.lower()] = pywmlx.PoCommentedString(mystring,
+                sentlist[mystring] = pywmlx.PoCommentedString(mystring,
                         orderid=(1,1,1), ismultiline=is_multiline, 
                         wmlinfos=wmlinfo , finfos=finfo, addedinfos=[] )
                 mystring = None
@@ -177,7 +177,7 @@ def main():
                 # search in the sentlist dictionary. 
                 # So we can get the PoCommentedString with sentlist.get()
                 # and we can write it into the reordered .po file
-                postring = sentlist.get(mystring.lower())
+                postring = sentlist.get(mystring)
                 if postring is None:
                     print("error: cannot find:", mystring, file=sys.stderr)
                     if args.logfile is not None:

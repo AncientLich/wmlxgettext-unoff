@@ -15,9 +15,9 @@ onDefineMacro = False
 def _closenode_update_dict(podict):
     if nodes[-1].sentences is not None:
         for i in nodes[-1].sentences:
-            posentence = podict.get(i.sentence.lower())
+            posentence = podict.get(i.sentence)
             if posentence is None:
-                podict[i.sentence.lower()] = ( 
+                podict[i.sentence] = ( 
                        nodes[-1].nodesentence_to_posentence(i) )
             else:
                 posentence.update_with_commented_string(

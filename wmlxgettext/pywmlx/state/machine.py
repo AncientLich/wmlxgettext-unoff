@@ -164,9 +164,9 @@ class PendingLuaString:
                     loc_addedinfos = []
                 if _pending_addedinfo is not None:
                     loc_addedinfos = _pending_addedinfo
-                loc_posentence = _dictionary.get(self.luastring.lower())
+                loc_posentence = _dictionary.get(self.luastring)
                 if loc_posentence is None:
-                    _dictionary[self.luastring.lower()] = PoCommentedString(
+                    _dictionary[self.luastring] = PoCommentedString(
                                 self.luastring, 
                                 orderid=(fileno, self.lineno, _linenosub),
                                 ismultiline=self.ismultiline,
