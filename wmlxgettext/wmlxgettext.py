@@ -19,23 +19,22 @@
 # wmlxgettext is a tool that is directly used during wesnoth build process 
 # to generate the pot files for the core campaigns.
 #
-# If you are an UMC developer you might want to use umcpo instead of using
+# If you are an UMC developer you might want to use GUI instead of using
 # wmlxgettext directly (but using wmlxgettext directly is however possible).
 #
-#                              BASIC PROCEDURE
+#                              USAGE
 #
-# todo
+# If you want to learn how to use wmlxgettext, read the online End-Users
+# documentation at:
+# http://wmlxgettext-unoff.readthedocs.org/en/latest/enduser/index.html
 #
-#                              MAGIC COMMENTS
+#                   SOURCE CODE DOCUMENTATION
 #
-# todo
-#
-#                              DEVELOPER INFORMATION
-#
-# todo.
-#
-
-
+# The source code, in some points, contain some comments that explains
+# what the source code does at that point.
+# However the source code is mainly explained on source documentation at:
+# http://wmlxgettext-unoff.readthedocs.org/en/latest/srcdoc/index.html
+ 
 import os
 import re
 import sys

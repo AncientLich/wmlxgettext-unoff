@@ -102,11 +102,60 @@ class WmlCheckpoState:
 class WmlCommentState:
     def __init__(self):
         self.regex = re.compile(r'\s*#.+')
-        self.iffail = 'wml_tag'
+        self.iffail = 'wml_str02'
     
     def run(self, xline, lineno, match):
         xline = None
         return (xline, 'wml_idle')
+
+
+
+# On WML you can have also  _ << translatable string >>, even if quite rare
+# This is considered here as "WML string 02" since it is a rare case.
+# However, for code safety, it is evalued Here (before evaluating tags, and
+# before string 1. Unlike all other strings, this will be evaluated ONLY if
+# translatable, to avoid possible conflicts with WmlGoLuaState (and to prevent
+# to make that state unreachable).
+# In order to ensure that the order of sentences will be respected, the regexp
+# does not match if " is found before _ <<
+# In this way the WmlStr01 state (wich is placed after) can be reached and the
+# sentence will be not lost.
+# WARNING: This also means that it is impossible to capture any wmlinfo wich
+#          uses this kind of translatable string
+#          example: name = _ <<Name>>
+#          in that case the string "name" will be captured, but the wmlinfo
+#          name = Name will be NOT added to authomatic informations.
+#          This solution is necessary, since extending the workaround
+#          done for _ "standard translatable strings" to _ << wmlstr02 >>
+#          can introduce serious bugs
+    def __init__(self):
+        rx = r'[^"]*_\s*<<(?:(.*?)>>|(.*))'
+        self.regex = re.compile(rx)
+        self.iffail = 'wml_tag'
+    
+    def run(self, xline, lineno, match):
+        _nextstate = 'wml_idle'
+        loc_translatable = True
+        loc_multiline = False
+        loc_string = None
+        if match.group(1):
+            loc_multiline = False
+            loc_string = match.group(1)
+            xline = xline [ match.end(): ]
+        elif match.group(2):
+            loc_multiline = True
+            loc_string = match.group(2)
+            _nextstate = 'wml_str20'
+            xline = None
+        else:
+            wmlerr('wmlxgettext python sources', 'wmlstr02 assertion error\n'
+                   'please report a bug if you encounter this error message')    
+        pywmlx.state.machine._pending_wmlstring = (
+            pywmlx.state.machine.PendingWmlString( 
+                lineno, loc_string, loc_multiline, loc_translatable
+            )
+        ) 
+        return (xline, _nextstate)
 
 
 
@@ -210,6 +259,27 @@ class WmlStr10:
 
 
 
+class WmlStr20:
+    def __init__(self):
+        self.regex = None
+        self.iffail = None
+    
+    def run(self, xline, lineno, match):
+        realmatch = re.match(r'(.*?)>>', xline)
+        _nextstate = 'wml_str20'
+        if realmatch:
+            pywmlx.state.machine._pending_wmlstring.addline( 
+                realmatch.group(1) )
+            xline = xline [ realmatch.end(): ]
+            _nextstate = 'wml_idle'
+        else:
+            pywmlx.state.machine._pending_wmlstring.addline(xline)
+            xline = None
+            _nextstate = 'wml_str20'
+        return (xline, _nextstate)
+
+
+
 # Only if the symbol '<<' is found inside a [lua] tag, than it means we are
 # actually starting a lua code.
 # It can happen that WML use the '<<' symbol in a very different context
@@ -268,10 +338,12 @@ def setup_wmlstates():
                                    ('wml_checkdom', WmlCheckdomState),
                                    ('wml_checkpo', WmlCheckpoState),
                                    ('wml_comment', WmlCommentState),
+                                   ('wml_str02', WmlStr02),
                                    ('wml_tag', WmlTagState),                    
                                    ('wml_getinf', WmlGetinfState),
                                    ('wml_str01', WmlStr01),
                                    ('wml_str10', WmlStr10),
+                                   ('wml_str20', WmlStr20),
                                    ('wml_golua', WmlGoluaState),
                                    ('wml_final', WmlFinalState)]:
         st = stateclass()
