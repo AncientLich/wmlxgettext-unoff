@@ -128,6 +128,7 @@ class WmlCommentState:
 #          This solution is necessary, since extending the workaround
 #          done for _ "standard translatable strings" to _ << wmlstr02 >>
 #          can introduce serious bugs
+class WmlStr02:
     def __init__(self):
         rx = r'[^"]*_\s*<<(?:(.*?)>>|(.*))'
         self.regex = re.compile(rx)
