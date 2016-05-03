@@ -110,21 +110,21 @@ class WmlCommentState:
 
 
 
-# On WML you can have also  _ << translatable string >>, even if quite rare
+# On WML you can also have _ << translatable string >>, even if quite rare
 # This is considered here as "WML string 02" since it is a rare case.
-# However, for code safety, it is evalued Here (before evaluating tags, and
+# However, for code safety, it is evaluated here before evaluating tags, and
 # before string 1. Unlike all other strings, this will be evaluated ONLY if
 # translatable, to avoid possible conflicts with WmlGoLuaState (and to prevent
 # to make that state unreachable).
 # In order to ensure that the order of sentences will be respected, the regexp
 # does not match if " is found before _ <<
 # In this way the WmlStr01 state (wich is placed after) can be reached and the
-# sentence will be not lost.
-# WARNING: This also means that it is impossible to capture any wmlinfo wich
+# sentence will not be lost.
+# WARNING: This also means that it is impossible to capture any wmlinfo which
 #          uses this kind of translatable string
 #          example: name = _ <<Name>>
 #          in that case the string "name" will be captured, but the wmlinfo
-#          name = Name will be NOT added to authomatic informations.
+#          name = Name will be NOT added to automatic informations.
 #          This solution is necessary, since extending the workaround
 #          done for _ "standard translatable strings" to _ << wmlstr02 >>
 #          can introduce serious bugs
@@ -162,7 +162,7 @@ class WmlStr02:
 
 class WmlTagState:
     def __init__(self):
-        # this regexp is deeply discussed in Source Documentation, chapter 6
+        # this regexp is discussed in depth in Source Documentation, chapter 6
         rx = r'\s*(?:[^"]+\(\s*)?\[\s*([\/+-]?)\s*([A-Za-z0-9_]+)\s*\]'
         self.regex = re.compile(rx)
         self.iffail = 'wml_getinf'
@@ -281,9 +281,9 @@ class WmlStr20:
 
 
 
-# Only if the symbol '<<' is found inside a [lua] tag, than it means we are
+# Only if the symbol '<<' is found inside a [lua] tag, then it means we are
 # actually starting a lua code.
-# It can happen that WML use the '<<' symbol in a very different context
+# It can happen that WML uses the '<<' symbol in a very different context
 # wich has nothing to do with lua, so switching to the lua states in that
 # case can lead to problems.
 # This happened on the file data/gui/default/widget/toggle_button_orb.cfg
@@ -293,18 +293,18 @@ class WmlStr20:
 #
 # In that case, after 'name' there is a WML string 
 # "('buttons/misc/orb{STATE}.png"
-# And after that you find a cuncatenation with a literal string 
+# And after that you find a concatenation with a literal string 
 # <<~RC(magenta>{icon})')>>
 #
 # That second string has nothing to do with lua, and, most importantly, if 
-# it is parsed with lua states, it return an error... why?
-# Semply becouse of the final ' symbol, wich is valid symbol, in lua, for
+# it is parsed with lua states, it returns an error... why?
+# Simply because of the final ' symbol, wich is a valid symbol, in lua, for
 # opening a new string; but, in that case, there is not an opening string,
 # but a ' symbol that must be used literally.
 #
 # This is why we use a global var _on_luatag in state.py wich is usually False.
-# it will be setted True only when opening a lua tag (see WmlTagState)
-# it will be setted to False again when the lua tag is closed (see WmlTagState)
+# it will be set to True only when opening a lua tag (see WmlTagState)
+# it will be set to False again when the lua tag is closed (see WmlTagState)
 class WmlGoluaState:
     def __init__(self):
         self.regex = re.compile(r'.*?<<\s*')
@@ -350,4 +350,3 @@ def setup_wmlstates():
         st = stateclass()
         pywmlx.state.machine.addstate(statename, 
             State(st.regex, st.run, st.iffail) )
-
