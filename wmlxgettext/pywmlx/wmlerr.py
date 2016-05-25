@@ -38,11 +38,9 @@ class WmlWarning(UserWarning):
 
 
 def print_wmlerr(message, iserr):
-    ansi_color = '\033[91;1m'  #red
-    errtype = "error:"
-    if iserr is False:
-        ansi_color = '\033[94m'  #blue
-        errtype = "warning:"
+    # red if error, blue if warning
+    ansi_color = '\033[91;1m' if iserr else '\033[94m'
+    errtype = "error:" if iserr else "warning:"
     # now we have ascii_color and errtype values
     # here we print the error/warning. 
     # 1) On posix we write "error" in red and "warning" in blue
