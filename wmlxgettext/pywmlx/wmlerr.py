@@ -37,7 +37,7 @@ class WmlWarning(UserWarning):
 
 
 
-def print_wmlerr(message, iserr):
+def print_wmlerr(finfo, message, iserr):
     # red if error, blue if warning
     ansi_color = '\033[91;1m' if iserr else '\033[94m'
     errtype = "error:" if iserr else "warning:"
@@ -45,26 +45,19 @@ def print_wmlerr(message, iserr):
     # here we print the error/warning. 
     # 1) On posix we write "error" in red and "warning" in blue
     if os.name == "posix" and enabled_ansi_col is True:
-        msg = ansi_color + errtype + ' ' + message
+        msg = ansi_color + errtype + ' \033[0m\033[93m' + finfo + ':\033[0m ' \
+              + message
     # 2) On non-posix systems (ex. windows) we don't use colors
     else:
-        msg = errtype + ' ' + message
+        msg = errtype + ' ' + finfo + ': ' + message
     print(msg, file=sys.stderr)
-    
-    
-    
-def dualcol_message(finfo, message):
-    if os.name == "posix" and enabled_ansi_col is True:
-        msg = '\033[0m\033[93m' + finfo + ':\033[0m ' + message
-    else:
-        msg = finfo + ': ' + message
-    return msg
-    
+
 
 
 def my_showwarning(message, category, filename, lineno, file=None, line=None):
     try:
-        print_wmlerr(message.args[0], False)
+        finfo, msg = message.args[0].split(": ", 1)
+        print_wmlerr(finfo, msg, False)
     except OSError:
         pass # the file (probably stderr) is invalid - this warning gets lost.
 
@@ -77,18 +70,15 @@ warnings.showwarning = my_showwarning
 def wmlerr(finfo, message, errtype=WmlError):
     if not is_utest:
         try:
-            msg = dualcol_message(finfo, message)
-            raise errtype(msg)
+            raise errtype(finfo + ": " + message)
         except errtype as err:
-            print_wmlerr(err.args[0], True)
+            print_wmlerr(finfo, message, True)
             sys.exit(1)
     else:
-        msg = dualcol_message(finfo, message)
-        raise errtype(msg)
+        raise errtype(finfo + ": " + message)
 
 
 
 def wmlwarn(finfo, message):
-    msg = dualcol_message(finfo, message)
-    warnings.warn(msg, WmlWarning)
+    warnings.warn(finfo + ": " + message, WmlWarning)
 
