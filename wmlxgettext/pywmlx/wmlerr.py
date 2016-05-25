@@ -1,10 +1,26 @@
 import os
 import sys
 import warnings
+import ctypes
+import struct
 
 enabled_ansi_col = True
 is_utest = False
 _warnall = False
+
+
+# these constants are used by the Win32 API
+FG_RED = 4
+FG_GREEN = 2
+FG_BLUE = 1
+FG_INTENSITY = 8
+BG_RED = 64
+BG_GREEN = 32
+BG_BLUE = 16
+BG_INTENSITY = 128
+STD_INPUT_HANDLE = -10
+STD_OUTPUT_HANDLE = -11
+STD_ERROR_HANDLE = -12
 
 
 def wmlerr_debug():
