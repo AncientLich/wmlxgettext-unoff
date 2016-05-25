@@ -1,6 +1,7 @@
 # wmlxgettext
 
 **THIS PROJECT IS NOW MERGED INTO THE WESNOTH PROJECT.**
+
 This repository must be considered deprecated now. 
 From now on, any wmlxgettext update will be added at:
 
