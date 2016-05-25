@@ -143,17 +143,20 @@ infact, not displayed since it is replaced by ``# po-override:``).
 Changing Domain in Lua code
 ===========================
 
-As explained before, on WML code, you could change the current domain with
-the WML preprocessor directive `#textdomain <new_current_domain>`_.
+Changing the current domain value in Lua uses is very different than the WML
+counterpart.
 
-When writing lua code, instead, the same action is performed in a very
-different way, using this code:
+   * On **WML** you will change the current domain value with the 
+     ``#textdomain`` directive
+   * On **Lua** code, instead, the same action is performed in a very
+     different way, using this code:
+ 
 
 .. code-block:: lua
 
   local _ = wesnoth.textdomain('wesnoth-xyz')
 
-.. note:
+.. note::
   
   *xyz* can be everything. We will use *xyz* only as an example.
 
