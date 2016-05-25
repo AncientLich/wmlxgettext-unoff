@@ -1,27 +1,15 @@
-# wmlxgettext-unoff
-unofficial version of wmlxgettext (wesnoth utility), rewritten from scratch using python 3.x
+# wmlxgettext
 
-Written by Nobun (registered as "AncientLich" on github site)
+**THIS PROJECT IS NOW MERGED INTO THE WESNOTH PROJECT.**
+This repository must be considered deprecated now. 
+From now on, any wmlxgettext update will be added at:
 
-http://wif.altervista.org
+https://github.com/wesnoth/wesnoth
+
+This repository is left open becouse it is needed by readthedocs
+(online documentation of wmlxgettext)
 
 -------------------------------------------------------------------
-
-The directory wmlxgettext contains the python files of the actual prject.
-However:
-   
-   * wmlxgettext/poreorder.py is not a part of the wmlxgettext sources but it
-     is a little utility used to help to verify that the output produced by 
-     wmlxgettext is safe.
-   * wmlxgettext/test_wmlxgettext.py and the _test directory contains the 
-     unittests used while wmlxgettext was developed (so they could be breaked
-     now).
-   
-So the real sources, in the wmlxdirectory, are:
-   * wmlxgettext.py
-   * the directory pywmlx and all python files and directories contained there.
-
---------------------------------------------------------------------
 
 Documentation:
     
@@ -35,8 +23,3 @@ under the "docs/source" directory of this repository
 
 (only makefile missed, but it can be created with sphinx using the 
 sphinx-quickstart utility).
-
-------------------------
-
-Another test tool is provided: wescheck.py (this time in the main main folder
-of this repository and not in the wmlxgettext directory). See wescheck_help.txt
