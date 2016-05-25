@@ -5,6 +5,7 @@ import ctypes
 import struct
 
 enabled_ansi_col = True
+enabled_win_col = False
 is_utest = False
 _warnall = False
 
@@ -22,6 +23,16 @@ STD_INPUT_HANDLE = -10
 STD_OUTPUT_HANDLE = -11
 STD_ERROR_HANDLE = -12
 
+# there are three ways to store the console's default status
+# the first requires to redefine the C structures used by the Win32 API
+# by using the ctypes.Structure class, and pass them by reference
+# by using ctypes.byref
+# the second requires to use ctypes.create_string_buffer
+# the third one just requires to create an empty bytes object
+# both of them must be able to contain exactly 22 bytes/characters
+# and you need to use the struct module to decode the values
+console_defaults = bytes(22)
+
 
 def wmlerr_debug():
     global is_utest
@@ -32,7 +43,36 @@ def wmlerr_debug():
 def ansi_setEnabled(value):
     global enabled_ansi_col
     enabled_ansi_col = value
- 
+
+
+
+def wincol_setEnabled(value):
+    global enabled_win_col
+    global handle
+    global default_console_status
+    global default_color
+    enabled_win_col = value
+
+    if enabled_win_col:
+        if os.name == "nt":
+            # and now, let's start playing with the Win32 API
+            # first of all, we need to get a handle to the console output
+            handle = ctypes.windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+            # and then we store the current console status
+            # to be able to reset the original color
+            ctypes.windll.kernel32.GetConsoleScreenBufferInfo(handle,
+                                                              console_defaults)
+            # by using struct.unpack_from, platform endianness is automatically
+            # handled
+            # this is why I'm using it, instead of a bitwise operation
+            default_color = struct.unpack_from("H", console_defaults, 8)[0]
+        else:
+            # someone tried to use the Windows API without being on Windows
+            # warn and exit
+            print("The --win-colors option is available only under Windows",
+                  file=sys.stderr)
+            sys.exit(1)
+
 
 
 def warnall():
@@ -58,15 +98,41 @@ def print_wmlerr(finfo, message, iserr):
     ansi_color = '\033[91;1m' if iserr else '\033[94m'
     errtype = "error:" if iserr else "warning:"
     # now we have ascii_color and errtype values
-    # here we print the error/warning. 
-    # 1) On posix we write "error" in red and "warning" in blue
-    if os.name == "posix" and enabled_ansi_col is True:
+    # here we print the error/warning.
+    # 1) On Windows, write "error" in red and "warning" in blue
+    #    by using the Win32 API, if the used requested it
+    if os.name == "nt" and enabled_win_col:
+        # a syntactic sugar to make lines shorter
+        kernel32 = ctypes.windll.kernel32
+        # first flush the stderr, otherwise colors might be changed in
+        # unpredictable ways
+        sys.stderr.flush()
+        if iserr:
+            kernel32.SetConsoleTextAttribute(handle, FG_RED | FG_INTENSITY)
+        else:
+            kernel32.SetConsoleTextAttribute(handle, FG_BLUE | FG_INTENSITY)
+        # then write the error type and continue on the same line
+        print(errtype + " ", end="", file=sys.stderr)
+        # flush again and write file name in yellow on the same line
+        sys.stderr.flush()
+        kernel32.SetConsoleTextAttribute(handle,
+                                           FG_RED | FG_GREEN | FG_INTENSITY)
+        print(finfo + ": ", end="", file=sys.stderr)
+        # then flush again, reset the color and finish writing
+        sys.stderr.flush()
+        ctypes.windll.kernel32.SetConsoleTextAttribute(handle, default_color)
+        print(message, file=sys.stderr)
+        # finally flush again for good measure
+        sys.stderr.flush()
+    # 2) On posix we write "error" in red and "warning" in blue
+    elif os.name == "posix" and enabled_ansi_col:
         msg = ansi_color + errtype + ' \033[0m\033[93m' + finfo + ':\033[0m ' \
               + message
-    # 2) On non-posix systems (ex. windows) we don't use colors
+        print(msg, file=sys.stderr)
+    # 3) On non-posix systems (ex. windows) we don't use colors
     else:
         msg = errtype + ' ' + finfo + ': ' + message
-    print(msg, file=sys.stderr)
+        print(msg, file=sys.stderr)
 
 
 
