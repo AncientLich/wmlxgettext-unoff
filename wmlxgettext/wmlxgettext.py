@@ -102,6 +102,14 @@ def commandline(args):
               ' disabled).')
     )
     parser.add_argument(
+        '--win-colors',
+        action='store_true',
+        default=False,
+        dest='win_col',
+        help=("On Windows systems, this flag uses the Win32 API to colorize "
+              "the output.")
+    )
+    parser.add_argument(
         '--warnall',
         action='store_true',
         default=False,
@@ -138,6 +146,7 @@ def commandline(args):
 def main():
     args = commandline(sys.argv[1:])
     pywmlx.ansi_setEnabled(args.ansi_col)
+    pywmlx.wincol_setEnabled(args.win_col)
     pywmlx.set_warnall(args.warnall)
     startPath = os.path.realpath(os.path.normpath(args.start_path))
     sentlist = dict()
