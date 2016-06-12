@@ -279,6 +279,8 @@ This **case-insensitive** regex will be search, **start of the string**, for:
 State WmlStr01
 --------------
 
+This is the state wich will capture a wml string type 1 ( "quoted string" )
+
 .. code-block:: python
    
    rx = r'(?:[^"]*?)\s*(_?)\s*"((?:""|[^"])*)("?)'
@@ -357,8 +359,52 @@ This is how this complex regexp works.
         (closing ``"`` sign not found) than the string is multi-line.
 
 --------------
+State WmlStr02
+--------------
+
+This is the state wich will capture a **translatable** wml string type 2 
+( _ <<translatable capitalized string>> )
+
+.. code-block:: python
+  
+  rx = r'[^"]*_\s*<<(?:(.*?)>>|(.*))'
+  self.regex = re.compile(rx)
+
+WmlStr02 is evalued after WmlCommentState (so it is evalued **before** 
+WmlStr01)::
+  
+  [^"]*_\s*<<
+
+Unlike before, WmlStr02 will match ONLY if the string is translatable 
+(so non-translatable <<string>> will be ignored by regex). 
+The regex will also mach only if **no** quotes found before the underscore 
+marker followed by the ``<<`` marker.
+
+We said that WmlStr02 is evalued **before** WmlStr01, and that is the reason
+why **no** quote should be found before WmlStr02 (the WmlStr01 must be evalued
+and not skipped; so the WmlStr02 regex will fail, and the WmlStr01 state can
+be reached to collect the WmlStr01).
+
+.. code-block:: none
+  
+  (?:(.*?)>>|(.*))
+
+The second (and last) part of the regex is a non-capturing group wich contains
+two alternatives:
+  
+  * ``(.*?)>>`` the first alternative matches if the close marker ``>>`` 
+    is found (single line translatable string). The capture ends when the 
+    **first** ``>>`` occurrence is found (non-greedy capture). 
+    Text is captured on group 1.
+  * ``(.*)`` the second alternative matches all the text until the end of the
+    line (multi-line translatable string). Text is captured on group 2.
+
+--------------
 State WmlStr10
 --------------
+
+This is the state wich will capture multi-line wml "quoted" string (type 1) 
+from line 2 to the end
 
 .. code-block:: python
    
@@ -374,6 +420,30 @@ must be contained into the string until the ending ``"`` will be found*>>.
 It will save, on group 1 and group 2, what the regexp used by WmlStr01 capture
 on group 2 and group 3.
 
+--------------
+State WmlStr20
+--------------
+
+This is the state wich will capture multi-line wml <<capitalized>> string 
+(type 2) from line 2 to the end
+
+WmlStr20 is a very particular state: it is structured as an always-run 
+state, but it works like a standard state.
+
+There is a regex inside the ``run`` function wich is very simple:
+    
+.. code-block:: python
+  
+  (.*?)>>
+
+This is a solution that allows WmlStr02 to stay there until the ``>>`` end 
+marker will be found somewhere. Infact:
+  
+  * If the regex fails, WmlStr20 will recursively change to itself (it stays to
+    WmlStr20)
+  * If the regex matches, WmlStr20 will capture the text into group(1) and
+    then the state will be changed to ``wml_idle``
+    
 -------------
 WmlGoluaState
 -------------

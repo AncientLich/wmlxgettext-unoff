@@ -42,7 +42,7 @@ Special Thanks To:
    * Elvish Hunter (wesnoth developer) for his very precious help.
    * \|Wolf\| (python Italia) for his deep knowledge on python and his 
      precious help.
-   * celticminstrel (on #wesnoth freenode channel): for explaining me how
+   * celticminstrel (wesnoth developer) for explaining me how
      to use the original perl wmlxgettext tool and for helping me to 
      improve the script.
    * loonycyborg: for testing the script and reporting bugs.
