@@ -198,11 +198,11 @@ previous paragraphs:
   * ``--package-version``: With this option, you can immediatly print the
     package version number into the .po header infos. Usually you will 
     add manually this info, so it is more an "easter egg" than a feature.
-  * ``--no-ansi-colors``: if you use this flag, you disable colors shown
-    in linux/mac console when a warning/error message occurs (windows will not 
-    display colors). This option will become useful if wmlxgettext will be 
-    added to the python GUI for wesnoth tools (since the ansi escape colors 
-    could be not desired by the GUI)
+  * ``--no-text-colors``: if you use this flag, you disable colors shown
+    in console when a warning/error message occurs. 
+    This option will become useful if wmlxgettext will be added to the python 
+    GUI for wesnoth tools (the code needed to 'paint the colors' must be
+    not executed when wmlxgettext is launched from GUI)
   
 Finally there is a last option, that an end-used should **never** use:
 
