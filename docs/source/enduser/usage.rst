@@ -204,7 +204,7 @@ previous paragraphs:
     GUI for wesnoth tools (the code needed to 'paint the colors' must be
     not executed when wmlxgettext is launched from GUI)
   
-Finally there is a last option, that an end-used should **never** use:
+Finally there is a last option, that an end-user should **never** use:
 
   * ``--initialdomain=INIT_DOMAIN``: It tells the name of the 
     current domain when no ``#textdomain`` still found in .cfg/.lua file.
