@@ -51,6 +51,11 @@ def commandline(args):
                    FILE1 FILE2 ... FILEN'''
     )
     parser.add_argument(
+        '--version',
+        action='version',
+        version='wmlxgettext 2016.09.01.py3'
+    )
+    parser.add_argument(
         '-o',
         default=None,
         dest='outfile',
