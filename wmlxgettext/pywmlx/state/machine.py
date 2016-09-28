@@ -21,6 +21,10 @@ import pywmlx.nodemanip
 
 # True if --warnall option is used
 _warnall = False
+# True if -D option is used
+_debugmode = False
+# debug output file
+_fdebug = None
 # dictionary of pot sentences
 _dictionary = None
 # dictionary containing lua and WML states
@@ -129,7 +133,7 @@ class PendingPlural:
         self.numequals = 0
         self.ismultiline = False
     
-    def addline(self, value, isfirstline):
+    def addline(self, value, isfirstline=False):
         if self.pluraltype != 3:
             value = re.sub('\\\s*$', '', value)
         else:
@@ -140,6 +144,19 @@ class PendingPlural:
             self.string = self.string + '\n' + value
     
     def convert(self):
+        if self.pluraltype == 2:
+            self.string = re.sub(r"\\\'", r"'", self.string)
+        if self.pluraltype != 3 and self.pluraltype!=0:
+            self.string = re.sub(r'(?<!\\)"', r'\"', self.string)
+        if self.pluraltype == 3:
+            self.string = self.string.replace('"', r'\"')
+        if self.ismultiline:    
+            lf = r'\\n"' + '\n"'
+            self.string = re.sub(r'(\n\r|\r\n|[\n\r])', 
+                                lf, self.string)
+            self.string = '""\n"' + self.string + '"'
+        if not self.ismultiline:
+            self.string = '"' + self.string + '"'
         return PoCommentedStringPL(self.string, ismultiline=self.ismultiline)
 
 
@@ -280,15 +297,22 @@ def addstate(name, value):
 
 
 
-def setup(dictionary, initialdomain, domain, wall):
+def setup(dictionary, initialdomain, domain, wall, fdebug):
     global _dictionary
     global _initialdomain
     global _domain
     global _warnall
+    global _debugmode
+    global _fdebug
     _dictionary = dictionary
     _initialdomain = initialdomain
     _domain = domain
     _warnall = wall
+    _fdebug = fdebug
+    if fdebug is None:
+        _debugmode = False
+    else:
+        _debugmode = True
     setup_luastates()
     setup_wmlstates()
 
@@ -307,6 +331,7 @@ def run(*, filebuf, fileref, fileno, startstate, waitwml=True):
     _on_luatag = False
     # cs is "current state"
     cs = _states.get(startstate)
+    cs_debug = startstate
     _current_lineno = 0
     _linenosub = 0
     _waitwml = waitwml
@@ -316,35 +341,48 @@ def run(*, filebuf, fileref, fileno, startstate, waitwml=True):
     for xline in filebuf:
         xline = xline.strip('\n\r')
         _current_lineno += 1
+        # on new line, debug file will write another marker
+        if _debugmode:
+            print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',
+                  file=_fdebug)
         while xline is not None:
-            # action number is used to know what function we should run
-            # debug_file0 = open(os.path.realpath('./debug.txt'), 'a')
-            # print("!!!", xline, file=debug_file0)
-            # debug_file0.close()
+            # print debug infos (if debugmode is on)
+            if _debugmode:
+                lno = '%05d' % _current_lineno
+                print('------------------------------------------------------',
+                      file=_fdebug)
+                print('LINE', lno, '|', xline, file=_fdebug)
+            # action number is used to know what function we should run    
             action = 0
             v = None
             m = None
             if cs.regex is None:
                 # action = 1 --> execute state.run
-                action = 1 
+                action = 1
+                if _debugmode:
+                    print('ALWAYS-RUN x', cs_debug, file=_fdebug)
             else:
                 # m is match
                 m = re.match(cs.regex, xline)
                 if m:
                     # action = 1 --> execute state.run
                     action = 1
+                    if _debugmode:
+                        print('RUN state  \\', cs_debug, file=_fdebug)
                 else:
                     # action = 2 --> change to the state pointed by 
                     #                state.iffail
                     action = 2
+                    if _debugmode:
+                        print('FAIL state |', cs_debug, file=_fdebug)
             if action == 1:
                 # xline, ns: xline --> override xline with new value
                 #            ns --> value of next state
                 xline, ns = cs.run(xline, _current_lineno, m)
-                # debug_cs = ns
+                cs_debug = ns
                 cs = _states.get(ns)
             else:
-                # debug_cs = cs.iffail
+                cs_debug = cs.iffail
                 cs = _states.get(cs.iffail)
             # debug_file = open(os.path.realpath('./debug.txt'), 'a')
             # print(debug_cs, file=debug_file)

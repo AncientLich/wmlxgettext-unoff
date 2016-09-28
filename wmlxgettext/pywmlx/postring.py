@@ -68,11 +68,6 @@ class PoCommentedString:
             print('msgstr ""', file=filebuf)
         else:
             # self.plural must be an instance of PoCommentedStringPL
-            if self.plural.ismultiline:
-                lf = r'\\n"' + '\n"'
-                self.plural.value = re.sub(r'(\n\r|\r\n|[\n\r])', 
-                                           lf, self.plural.value)
-                self.plural.value = '""\n' + self.plural.value
             print('msgid_plural', self.plural.value, file=filebuf)
             print('msgstr[0] ""', file=filebuf)
             print('msgstr[1] ""', file=filebuf)

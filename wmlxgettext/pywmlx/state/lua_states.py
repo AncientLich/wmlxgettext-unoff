@@ -3,6 +3,7 @@ import pywmlx.state.machine
 from pywmlx.state.state import State
 from pywmlx.wmlerr import wmlwarn
 from pywmlx.wmlerr import wmlerr
+import sys
 
 
 
@@ -86,7 +87,7 @@ class LuaStr00:
         pywmlx.state.machine._pending_luastring = (
             pywmlx.state.machine.PendingLuaString( 
                 lineno, 'lua_plural', '', False,
-                True, 0, PendingPlural()
+                True, 0, pywmlx.state.machine.PendingPlural()
             )
         )
         return (xline, 'lua_plidle1')
@@ -283,7 +284,7 @@ class LuaPlIdle1:
         
     def run(self, xline, lineno, match):
         status = pywmlx.state.machine._pending_luastring.plural.status
-        realmatch = re.match(r'\s*(\S)')
+        realmatch = re.match(r'\s*(\S)', xline)
         if realmatch:
             _nextstate = 'lua_idle'
             if realmatch.group(1) == '"':
@@ -305,7 +306,7 @@ class LuaPlIdle1:
                     if status == 'wait_plural':
                         pywmlx.state.machine._pending_luastring.plural = None
                     # when parenthenthesis
-                    xline = [ realmatch.end(): ]
+                    xline = xline [ realmatch.end(): ]
                     return (xline, 'lua_idle')
             else:
                 # this should never happen. But if the first value after _ (
@@ -314,7 +315,7 @@ class LuaPlIdle1:
                 finfo = pywmlx.nodemanip.fileref + ":" + str(lineno)
                 errmsg = "first argument of function '_ (...)' must be a string"
                 wmlerr(finfo, errmsg)
-            xline = [ realmatch.end(): ]
+            xline = xline [ realmatch.end(): ]
             xline = realmatch.group(1) + xline
             return (xline, _nextstate)
                 
@@ -335,7 +336,7 @@ class LuaPlIdle2:
     def run(self, xline, lineno, match):
         realmatch = re.match(r'\s*,', xline)
         if realmatch:
-            xline = [ realmatch.end(): ]
+            xline = xline [ realmatch.end(): ]
             return (xline, 'lua_plidle1')
         else:
             pywmlx.state.machine._pending_luastring.plural = None
@@ -523,7 +524,7 @@ class LuaPl03o:
                 match.group(2)
             )
             pywmlx.state.machine._pending_luastring.numequals = (
-                len(match.group(1)
+                len(match.group(1))
             )
         else:
             pywmlx.state.machine._pending_luastring.plural.ismultiline = True
@@ -532,9 +533,9 @@ class LuaPl03o:
                 match.group(2)
             )
             pywmlx.state.machine._pending_luastring.plural.numequals = (
-                len(match.group(1)
+                len(match.group(1))
             )
-        return (xline, 'lua_str30')
+        return (xline, 'lua_pl30')
 
 
 
@@ -614,7 +615,7 @@ class LuaPl30:
     def run(self, xline, lineno, match):
         status = pywmlx.state.machine._pending_luastring.plural.status
         numequals = 0
-        if 'wait_string':
+        if status == 'wait_string':
             numequals = pywmlx.state.machine._pending_luastring.numequals
         else:
             numequals = pywmlx.state.machine._pending_luastring.plural.numequals
@@ -623,7 +624,7 @@ class LuaPl30:
         _nextstate = 'lua_pl30'
         if realmatch:
             xline = xline [ realmatch.end(): ]
-            if 'wait_string':
+            if status == 'wait_string':
                 pywmlx.state.machine._pending_luastring.addline( 
                     realmatch.group(1) 
                 )
@@ -632,6 +633,7 @@ class LuaPl30:
                 )
                 _nextstate = 'lua_plidle2'
             else:
+                print('debug: on plural', file=sys.stderr)
                 pywmlx.state.machine._pending_luastring.plural.addline( 
                     realmatch.group(1) 
                 )
@@ -640,7 +642,10 @@ class LuaPl30:
                 )
                 _nextstate = 'lua_plidle3'
         else:
-            pywmlx.state.machine._pending_luastring.addline(xline)
+            if status == 'wait_string':
+                pywmlx.state.machine._pending_luastring.addline(xline)
+            else:
+                pywmlx.state.machine._pending_luastring.plural.addline(xline)
             xline = None
             _nextstate = 'lua_pl30'
         return (xline, _nextstate)

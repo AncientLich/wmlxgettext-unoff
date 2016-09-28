@@ -130,6 +130,15 @@ def commandline(args):
               "ignored.") 
     )
     parser.add_argument(
+        '--DMode',
+        action='store_true',
+        dest='debugmode',
+        default=False,
+        help=("DON'T USE THIS OPTION. It is reserved to test how wmlxgettext "
+              "internally works. If this option is enabled, an extra "
+              "file (debug.txt) will be created. ")
+    )
+    parser.add_argument(
         'filelist',
         help='List of WML/lua files of your UMC (source files)',
         nargs='*'
@@ -146,8 +155,11 @@ def main():
     startPath = os.path.realpath(os.path.normpath(args.start_path))
     sentlist = dict()
     fileno = 0
+    fdebug = None
+    if args.debugmode:
+        fdebug = open('debug.txt', 'w', encoding='utf-8')
     pywmlx.statemachine.setup(sentlist, args.initdom, args.domain, 
-                              args.warnall)
+                              args.warnall, fdebug)
     if args.warnall is True and args.outfile is None:
         pywmlx.wmlwarn('command line warning', 'Writing the output to stdout '
                        '(and then eventually redirect that output to a file) '
@@ -238,6 +250,8 @@ def main():
         print('', file=outfile)
     if args.outfile is not None:
         outfile.close()
+    if args.debugmode:
+        fdebug.close()
 
 
 
