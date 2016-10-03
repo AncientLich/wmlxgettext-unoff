@@ -1,0 +1,324 @@
+diff -ruN ./data/cache/perl/wesnoth-ai.po ./data/cache/python/wesnoth-ai.po
+--- ./data/cache/perl/wesnoth-ai.po	2016-09-28 19:38:35.529244422 +0200
++++ ./data/cache/python/wesnoth-ai.po	2016-09-28 19:39:42.190661094 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-anl.po ./data/cache/python/wesnoth-anl.po
+--- ./data/cache/perl/wesnoth-anl.po	2016-09-28 19:37:42.324125319 +0200
++++ ./data/cache/python/wesnoth-anl.po	2016-09-28 19:38:48.093510225 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-aoi.po ./data/cache/python/wesnoth-aoi.po
+--- ./data/cache/perl/wesnoth-aoi.po	2016-09-28 19:37:41.620110583 +0200
++++ ./data/cache/python/wesnoth-aoi.po	2016-09-28 19:38:47.337494215 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-did.po ./data/cache/python/wesnoth-did.po
+--- ./data/cache/perl/wesnoth-did.po	2016-09-28 19:38:00.688510389 +0200
++++ ./data/cache/python/wesnoth-did.po	2016-09-28 19:39:07.057912502 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-dm.po ./data/cache/python/wesnoth-dm.po
+--- ./data/cache/perl/wesnoth-dm.po	2016-09-28 19:38:02.416546689 +0200
++++ ./data/cache/python/wesnoth-dm.po	2016-09-28 19:39:08.789949307 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-dw.po ./data/cache/python/wesnoth-dw.po
+--- ./data/cache/perl/wesnoth-dw.po	2016-09-28 19:37:57.716447983 +0200
++++ ./data/cache/python/wesnoth-dw.po	2016-09-28 19:39:03.917845806 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-editor.po ./data/cache/python/wesnoth-editor.po
+--- ./data/cache/perl/wesnoth-editor.po	2016-09-28 19:38:24.649014711 +0200
++++ ./data/cache/python/wesnoth-editor.po	2016-09-28 19:39:30.766417201 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-ei.po ./data/cache/python/wesnoth-ei.po
+--- ./data/cache/perl/wesnoth-ei.po	2016-09-28 19:37:30.575879657 +0200
++++ ./data/cache/python/wesnoth-ei.po	2016-09-28 19:38:36.005254482 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-help.po ./data/cache/python/wesnoth-help.po
+--- ./data/cache/perl/wesnoth-help.po	2016-09-28 19:37:53.860367064 +0200
++++ ./data/cache/python/wesnoth-help.po	2016-09-28 19:38:59.849759450 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-httt.po ./data/cache/python/wesnoth-httt.po
+--- ./data/cache/perl/wesnoth-httt.po	2016-09-28 19:37:58.420462762 +0200
++++ ./data/cache/python/wesnoth-httt.po	2016-09-28 19:39:04.681862031 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-lib.po ./data/cache/python/wesnoth-lib.po
+--- ./data/cache/perl/wesnoth-lib.po	2016-09-28 19:38:14.068791752 +0200
++++ ./data/cache/python/wesnoth-lib.po	2016-09-28 19:39:20.074189345 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-low.po ./data/cache/python/wesnoth-low.po
+--- ./data/cache/perl/wesnoth-low.po	2016-09-28 19:37:54.440379232 +0200
++++ ./data/cache/python/wesnoth-low.po	2016-09-28 19:39:00.441772013 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-l.po ./data/cache/python/wesnoth-l.po
+--- ./data/cache/perl/wesnoth-l.po	2016-09-28 19:37:59.908494006 +0200
++++ ./data/cache/python/wesnoth-l.po	2016-09-28 19:39:06.277895931 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-multiplayer.po ./data/cache/python/wesnoth-multiplayer.po
+--- ./data/cache/perl/wesnoth-multiplayer.po	2016-09-28 19:37:56.924431357 +0200
++++ ./data/cache/python/wesnoth-multiplayer.po	2016-09-28 19:39:03.117828818 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-nr.po ./data/cache/python/wesnoth-nr.po
+--- ./data/cache/perl/wesnoth-nr.po	2016-09-28 19:38:01.336523999 +0200
++++ ./data/cache/python/wesnoth-nr.po	2016-09-28 19:39:07.717926526 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth.po ./data/cache/python/wesnoth.po
+--- ./data/cache/perl/wesnoth.po	2016-09-28 19:37:41.468107401 +0200
++++ ./data/cache/python/wesnoth.po	2016-09-28 19:38:47.181490912 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+@@ -2412,6 +2412,11 @@
+ msgid "female^unhealable"
+ msgstr ""
+ 
++#. [lua]: wesnoth.wml_actions.message
++#: data/lua/wml/message.lua:233
++msgid "input"
++msgstr ""
++
+ #. [lua]: generate_objectives
+ #: data/lua/wml/objectives.lua:50
+ msgid "Victory:"
+diff -ruN ./data/cache/perl/wesnoth-sof.po ./data/cache/python/wesnoth-sof.po
+--- ./data/cache/perl/wesnoth-sof.po	2016-09-28 19:37:54.820387205 +0200
++++ ./data/cache/python/wesnoth-sof.po	2016-09-28 19:39:00.861780927 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-sotbe.po ./data/cache/python/wesnoth-sotbe.po
+--- ./data/cache/perl/wesnoth-sotbe.po	2016-09-28 19:38:00.388504088 +0200
++++ ./data/cache/python/wesnoth-sotbe.po	2016-09-28 19:39:06.749905959 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-tb.po ./data/cache/python/wesnoth-tb.po
+--- ./data/cache/perl/wesnoth-tb.po	2016-09-28 19:37:41.776113847 +0200
++++ ./data/cache/python/wesnoth-tb.po	2016-09-28 19:38:47.501497688 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-test.po ./data/cache/python/wesnoth-test.po
+--- ./data/cache/perl/wesnoth-test.po	2016-09-28 19:38:02.732553327 +0200
++++ ./data/cache/python/wesnoth-test.po	2016-09-28 19:39:09.101955937 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-thot.po ./data/cache/python/wesnoth-thot.po
+--- ./data/cache/perl/wesnoth-thot.po	2016-09-28 19:37:42.620131516 +0200
++++ ./data/cache/python/wesnoth-thot.po	2016-09-28 19:38:48.421517172 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-trow.po ./data/cache/python/wesnoth-trow.po
+--- ./data/cache/perl/wesnoth-trow.po	2016-09-28 19:38:02.000537949 +0200
++++ ./data/cache/python/wesnoth-trow.po	2016-09-28 19:39:08.369940381 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:38 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-tsg.po ./data/cache/python/wesnoth-tsg.po
+--- ./data/cache/perl/wesnoth-tsg.po	2016-09-28 19:37:57.300439250 +0200
++++ ./data/cache/python/wesnoth-tsg.po	2016-09-28 19:39:03.501836973 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-tutorial.po ./data/cache/python/wesnoth-tutorial.po
+--- ./data/cache/perl/wesnoth-tutorial.po	2016-09-28 19:37:54.988390729 +0200
++++ ./data/cache/python/wesnoth-tutorial.po	2016-09-28 19:39:01.029784493 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-units.po ./data/cache/python/wesnoth-units.po
+--- ./data/cache/perl/wesnoth-units.po	2016-09-28 19:37:56.356419436 +0200
++++ ./data/cache/python/wesnoth-units.po	2016-09-28 19:39:02.509815911 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"
+diff -ruN ./data/cache/perl/wesnoth-utbs.po ./data/cache/python/wesnoth-utbs.po
+--- ./data/cache/perl/wesnoth-utbs.po	2016-09-28 19:37:59.620487959 +0200
++++ ./data/cache/python/wesnoth-utbs.po	2016-09-28 19:39:05.981889643 +0200
+@@ -2,7 +2,7 @@
+ msgstr ""
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: http://bugs.wesnoth.org/\n"
+-"POT-Creation-Date: 2016-09-28 17:37 UTC\n"
++"POT-Creation-Date: 2016-09-28 17:39 UTC\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+ "Language-Team: LANGUAGE <LL@li.org>\n"

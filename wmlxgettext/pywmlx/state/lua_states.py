@@ -3,7 +3,6 @@ import pywmlx.state.machine
 from pywmlx.state.state import State
 from pywmlx.wmlerr import wmlwarn
 from pywmlx.wmlerr import wmlerr
-import sys
 
 
 
@@ -633,7 +632,6 @@ class LuaPl30:
                 )
                 _nextstate = 'lua_plidle2'
             else:
-                print('debug: on plural', file=sys.stderr)
                 pywmlx.state.machine._pending_luastring.plural.addline( 
                     realmatch.group(1) 
                 )

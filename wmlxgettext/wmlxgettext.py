@@ -53,7 +53,7 @@ def commandline(args):
     parser.add_argument(
         '--version',
         action='version',
-        version='wmlxgettext 2016.09.01.py3'
+        version='wmlxgettext 2016.10.03.py3'
     )
     parser.add_argument(
         '-o',

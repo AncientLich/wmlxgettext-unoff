@@ -1,0 +1,37 @@
+wescheck.py originally allowed me to compare my (python) wmlxgettext results
+agains PERL wmlxgettext result, creating diff files and error-log files.
+
+The wescheck.py is enough good as it is, even if it assumes to compare a PERL
+wmlxgettext (located under WESNOTH/utils directory) and PYTHON wmlxgettext
+(under my repository structure, so under a sub-directory called wmlxgettext 
+ from the one where wescheck.py is located)
+
+The only change I really needed to perform was at wescheck.py line 75
+
+cmd = [perl_wmlx, wesnothdir, domainname]
+
+wich becomed
+
+cmd = [perl_wmlx, wesnothdir, domainname, '--no-text-colors']
+
+in order to disable text color codes from error messages in error log files
+(wich are not uploaded in this test, they are useless for this test)
+
+--------------------------------------
+
+As I said before, wescheck.py assumes PERL vs PYTHON comparison.
+
+What I did is:
+* moved stable wmlxgettext (WITHOUT plural form) under WESNOTH/utils 
+  (I remember: I tested under wesnoth 1.13.4 wich still had PERL wmlxgettext 
+   as the default wmlxgettext tool)
+  So this is the PYTHON version version BEFORE adding the plural support.
+  Wescheck.py will label it as the 'perl' wmlxgettext
+* runned wescheck.py from the plural branch of my wmlxgettext under my 
+  repository. In this way wescheck.py will consider plural-support wmlxgettext
+  as the PYTHON one.
+  
+In this way, the diff file produced will contain additions, subtractions and
+modifications considering the STABLE wmlxgettext output files as the ORIGINAL 
+ones, while considering the PLURAL FORM SUPPORTING wmlxgettext output files as
+the files to very what differences will be produced from the original files.

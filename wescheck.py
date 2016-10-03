@@ -79,7 +79,7 @@ def get_commands(wesnoth, domains, perl_wmlx, py_wmlx):
             cmd.append(f)
         perlcommands[domain] = list(cmd)
         cmd = None
-        cmd = [py_wmlx, '--no-ansi-colors', wesnothdir, domainname]
+        cmd = [py_wmlx, '--no-text-colors', wesnothdir, domainname]
         if domain == 'wesnoth':
             cmd.append('--initialdomain=wmlxgettext')
         for f in filelist:
