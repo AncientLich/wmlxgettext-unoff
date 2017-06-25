@@ -11,6 +11,12 @@ file.
 From now on, the (old) perl script will be called "wmlxgettext 1.0", while the
 new python3 script will be called "wmlxgettext 2.x".
 
+**Warning:** this source documentation is a bit outdated. This documentation is
+however still valid to understand the wmlxgettext source logic.
+Please consider to take a look also to source code comments for a more updated
+source documentation.
+
+
 .. toctree::
    :maxdepth: 2
    :numbered:

@@ -96,6 +96,7 @@ The ``-o`` options accepts:
   
   * either a file name with absolute path
   * or a file name with relative path (for example: ``./output.po``)
+  * or it could setted to "-" (``wmlxgettext -o - ...``) to write output to stdout
   
 Also the parameter ``--directory`` discussed before can accept both an
 absolute path or a relative path starting from the current working directory
@@ -146,39 +147,37 @@ This means that those two files will be searched and parsed:
 Wmlxgettext with explicit list of files and output redirection
 ==============================================================
 
-This is the **unsuggested** way to use wmlxgettext.
+This is the **unsuggested** way to use wmlxgettext, since output redirection
+can create issues. When writing to stoud, infact, the console will use its own
+text codify instead of the UTF-8 codify you could expect.
 
-This syntax is supported only becouse wmlxgettext 2.x must be 
-retro-compatible with the syntax used in past by wmlxgettext 1.0.
+For this reason, starting from version 2017.06.25.py3 the -o parameter 
+is becomed mandatory, to discourage printing the output to stdout for a casual 
+usage. So the old syntax used by wmlxgettext 1.x (perl version) is not anymore 
+supported.
 
-This syntax is to be considered **deprecated** and it should be used **only** 
-by scons/cmake or autotools when buinding the core source... in brief words:
-if you are a person who is developing his own wesnoth-addon **NEVER** use this
-syntax.
-
-The syntax is, more or less, the same showed in the previous paragraph, but
-this time we don't directly create the .po file, but the .po file will be
-written in console (stdout), wich redirect the output to the .po file::
+So you couldn't anymore invoke wmlxgettext like::
   
   ./wmlxgettext --domain=domain_name --directory=/home/user/wesnoth/userdata/add-ons Invasion_from_the_Unknown/_main.cfg Invasion_from_the_Unknown/other.cfg [...] > ./file.po
 
-Well... at a first look we could think there is actually no difference from
-this syntax and the syntax showed before.
-
-But it is not true: there is a huge difference:
+However it is still possible to print the output to stdout instead of to writing
+an actual file, if you **really** need it::
   
-  * if you use the ``-o`` option, you will let wmlxgettext to directly create
-    for you the output file, wich will be correctly written using the
-    ``UTF-8`` format, as expected by wesnoth
-  * if you don't use the ``-o`` option, like showed here, the output will be
-    printed to the console (stdout), wich will use its own text codify, 
-    wich may leads to critical problems. The output redirection cannot fix
-    those issues, if they happen.
+  ./wmlxgettext -o - --domain=domain_name --directory=/home/user/wesnoth/userdata/add-ons Invasion_from_the_Unknown/_main.cfg Invasion_from_the_Unknown/other.cfg [...] | application_accepting_wmlxgettext_stout_as_input_pipe
 
-This is expecially true under windows, where this last syntax **will never
-work** (python will stops returning a traceback error).
+If you use the special value "-" for -o parameter (like showed above), than
+the output will be printed to stdout as desired.
 
-So... **NEVER** use output redirection, but use instead the ``-o`` option.
+This way printing to stdout would be possible only if explictly asked and only
+when it is actually requested on purpose by the user.
+
+It could be, obliovsly, possible to print a file into stdout and redirecting 
+the output to a file, but it is **higly** discouraged.
+On a standard use case (creating a pot file for a wesnoth addon) you should 
+consider to use method 1 explained two paragraphs ago::
+  
+  ./wmlxgettext --domain=DOMAIN_NAME --directory=YOUR_ADDON_DIRECTORY --recursive -o ./FILENAME.po
+
 
 ===================
 Optional parameters
